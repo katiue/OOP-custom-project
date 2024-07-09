@@ -7,10 +7,11 @@ namespace OOP_custom_project
     {
         public static void Main()
         {
-            string current_screen_type = "drawing";
+            string current_screen_type = "see map";
             Window window = new Window("Game screen", 1000, 700);
             GIFprocessor GifFile;
             CustomShape shape = new CustomShape(window);
+            InteractiveMap map = new InteractiveMap();
 
             do
             {
@@ -32,6 +33,10 @@ namespace OOP_custom_project
                         break;
                     case "drawing":
                         shape.Drawing();
+                        break;
+                    case "see map":
+                        map.Update();
+                        map.Draw();
                         break;
                 }
 
