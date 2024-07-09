@@ -15,7 +15,7 @@ namespace OOP_custom_project
         public InteractiveMap()
         {
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
-            _zoom = 1.0f;
+            _zoom = 1.7f;
             _offsetX = 0.0f;
             _offsetY = 0.0f;
 
@@ -30,6 +30,8 @@ namespace OOP_custom_project
 
         public void Draw()
         {
+            Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\background.png");
+            SplashKit.DrawBitmap(mapImage, _offsetX-120, _offsetY-120, SplashKit.OptionScaleBmp(2.2, 1.5));
             SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
             foreach (var zone in _zones)
             {
@@ -50,7 +52,7 @@ namespace OOP_custom_project
             // Handle input for zooming
             Vector2D scroll = SplashKit.MouseWheelScroll();
             // Calculate the new zoom level
-            if ((_zoom + (float)scroll.Y / 10.0f > 1.0f) && (_zoom + (float)scroll.Y / 10.0f < 1.7f))
+            if ((_zoom + (float)scroll.Y / 10.0f > 1.7f) && (_zoom + (float)scroll.Y / 10.0f < 3f))
             {
                 _zoom += (float)scroll.Y / 10.0f;
             }
@@ -64,8 +66,8 @@ namespace OOP_custom_project
                 _offsetY += (float)pos.Y;
 
                 // Ensure the map stays within bounds
-                LimitOffsets();
             }
+            LimitOffsets();
 
             // Check for mouse clicks
             if (SplashKit.MouseClicked(MouseButton.RightButton))
@@ -96,16 +98,16 @@ namespace OOP_custom_project
             float scaledMapWidth = _mapImage.Width * _zoom;
             float scaledMapHeight = _mapImage.Height * _zoom;
 
-            float maxOffsetX = WindowWidth - scaledMapWidth;
-            float maxOffsetY = WindowHeight - scaledMapHeight;
+            float maxOffsetX = (WindowWidth - scaledMapWidth)/2;
+            float maxOffsetY = (WindowHeight - scaledMapHeight)/2;
 
            // Prevent moving too far to the left or top
-            if (_offsetX > 330) _offsetX = 330;
-            if (_offsetY > 250) _offsetY = 250;
+            if (_offsetX > 1080) _offsetX = 1080;
+            if (_offsetY > 810) _offsetY = 810;
 
             // Prevent moving too far to the right or bottom
-            if (_offsetX < maxOffsetX) _offsetX = maxOffsetX;
-            if (_offsetY < maxOffsetY) _offsetY = maxOffsetY;
+            if (_offsetX < -1160) _offsetX = -1160;
+            if (_offsetY < -920) _offsetY = -920;
         }
 
         private void ShowZoneDetails(Zone zone)
