@@ -11,7 +11,7 @@ namespace OOP_custom_project
             Window window = new Window("Game screen", 1000, 700);
             GIFprocessor GifFile;
             CustomShape shape = new CustomShape(window);
-            InteractiveMap map = new InteractiveMap();
+            InteractiveMap map = new InteractiveMap(window);
 
             do
             {

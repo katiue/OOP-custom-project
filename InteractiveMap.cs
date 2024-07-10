@@ -8,24 +8,25 @@ namespace OOP_custom_project
         private Bitmap _mapImage;
         private float _zoom;
         private float _offsetX, _offsetY;
-        private List<Zone> _zones;
-        private const int WindowWidth = 1000;
-        private const int WindowHeight = 700;
+        private List<MapObject> _zones;
+        private Window window;
 
-        public InteractiveMap()
+        public InteractiveMap(Window window)
         {
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
             _zoom = 1.7f;
             _offsetX = 0.0f;
             _offsetY = 0.0f;
 
+
             // Initialize zones
-            _zones = new List<Zone>
+            _zones = new List<MapObject>
         {
-            new Zone("Zone 1", new Rectangle() { X = 100, Y = 100, Width = 200, Height = 200 }),
-            new Zone("Zone 2", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 })
+            new MapObject("D:\\OOP-custom-project\\Mining_removedbg\\", new Rectangle() { X = 100, Y = 100, Width = 100, Height = 100 }, 49, 0.04),
+            new MapObject("D:\\OOP-custom-project\\Mining_removedbg\\", new Rectangle() { X = 300, Y = 300, Width = 100, Height = 100 }, 49, 0.04)
             // Add more zones as needed
         };
+            this.window = window;
         }
 
         public void Draw()
@@ -37,13 +38,13 @@ namespace OOP_custom_project
             {
                 Rectangle scaledArea = new Rectangle()
                 {
-                    X = (zone.Area.X * _zoom) + _offsetX,
-                    Y = (zone.Area.Y * _zoom) + _offsetY,
-                    Width = zone.Area.Width * _zoom,
-                    Height = zone.Area.Height * _zoom
+                    X = zone.Area.X / Math.Max(2.5f, _zoom) - (230*(_zoom-1.7)) + _offsetX,
+                    Y = zone.Area.Y / Math.Max(2.5f, _zoom) - (130 * (_zoom-1.7)) + _offsetY,
+                    Width = zone.Area.Width / Math.Max(2.5f, _zoom),
+                    Height = zone.Area.Height / Math.Max(2.5f, _zoom)
                 };
 
-                SplashKit.FillRectangle(Color.Green, scaledArea);
+                zone.ShowGifFrames(window);
             }
         }
 
@@ -56,7 +57,6 @@ namespace OOP_custom_project
             {
                 _zoom += (float)scroll.Y / 10.0f;
             }
-            Console.WriteLine(_offsetX + " " + _offsetY + " " + _zoom);
 
             // Handle input for panning
             Vector2D pos = SplashKit.MouseMovement();
@@ -79,10 +79,10 @@ namespace OOP_custom_project
                 {
                     Rectangle scaledArea = new Rectangle()
                     {
-                        X = (zone.Area.X * _zoom) + _offsetX,
-                        Y = (zone.Area.Y * _zoom) + _offsetY,
-                        Width = zone.Area.Width * _zoom,
-                        Height = zone.Area.Height * _zoom
+                        X = zone.Area.X / Math.Max(2.5f, _zoom) - (230 * (_zoom - 1.7)) + _offsetX,
+                        Y = zone.Area.Y / Math.Max(2.5f, _zoom) - (130 * (_zoom - 1.7)) + _offsetY,
+                        Width = zone.Area.Width / Math.Max(2.5f, _zoom),
+                        Height = zone.Area.Height / Math.Max(2.5f, _zoom)
                     };
 
                     if (SplashKit.PointInRectangle(mouseX, mouseY, scaledArea.X, scaledArea.Y, scaledArea.Width, scaledArea.Height))
@@ -95,12 +95,6 @@ namespace OOP_custom_project
         }
         private void LimitOffsets()
         {
-            float scaledMapWidth = _mapImage.Width * _zoom;
-            float scaledMapHeight = _mapImage.Height * _zoom;
-
-            float maxOffsetX = (WindowWidth - scaledMapWidth)/2;
-            float maxOffsetY = (WindowHeight - scaledMapHeight)/2;
-
            // Prevent moving too far to the left or top
             if (_offsetX > 1080) _offsetX = 1080;
             if (_offsetY > 810) _offsetY = 810;
@@ -110,7 +104,7 @@ namespace OOP_custom_project
             if (_offsetY < -920) _offsetY = -920;
         }
 
-        private void ShowZoneDetails(Zone zone)
+        private void ShowZoneDetails(MapObject zone)
         {
             Font font = new Font("Arial", "Arial.ttf");
             SplashKit.DisplayDialog(zone.Name, "Details about " + zone.Name, font, 12);
