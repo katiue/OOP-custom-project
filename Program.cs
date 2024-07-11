@@ -35,7 +35,6 @@ namespace OOP_custom_project
                         shape.Drawing();
                         break;
                     case "see map":
-                        map.Update();
                         map.Draw();
                         break;
                 }

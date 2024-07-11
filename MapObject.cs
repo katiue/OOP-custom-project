@@ -9,10 +9,7 @@ namespace OOP_custom_project
 {
     public class MapObject
     {
-        private DateTime _lastFrameTime;
-        private int _currentFrame;
-        private readonly double _frameDuration; // Duration for each frame in seconds
-        private readonly Bitmap[] _frames;
+        public readonly Bitmap[] _frames;
         public string Name { get; set; }
         public Rectangle Area { get; set; }
 
@@ -20,9 +17,6 @@ namespace OOP_custom_project
         {
             Name = name;
             Area = area;
-            _frameDuration = frameDuration;
-            _currentFrame = 0;
-            _lastFrameTime = DateTime.Now;
             _frames = LoadGifFrames(name, frameCount, frameDuration);
         }
         private static Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
@@ -65,47 +59,6 @@ namespace OOP_custom_project
                 }
             }
             return frames;
-        }
-
-        public void ShowGifFrames(Window window)
-        {
-            while (_currentFrame < _frames.Length - 1)
-            {
-                if (window.CloseRequested)
-                    break;
-                SplashKit.ProcessEvents();
-                SplashKit.ClearScreen();
-
-                // Calculate time elapsed and update the frame
-                DateTime now = DateTime.Now;
-                double elapsedSeconds = (now - _lastFrameTime).TotalSeconds;
-
-                if (elapsedSeconds >= _frameDuration)
-                {
-                    _currentFrame++;
-                    _lastFrameTime = now;
-                }
-                // Get the dimensions of the window
-                int BoxWidth = (int)Area.Width;
-                int BoxHeight = (int)Area.Height;
-
-                // Get the dimensions of the current frame
-                Bitmap currentFrame = _frames[_currentFrame];
-                int frameWidth = currentFrame.Width;
-                int frameHeight = currentFrame.Height;
-
-                // Calculate scaling factors
-                double scaleX = (double)BoxWidth / frameWidth;
-                double scaleY = (double)BoxHeight / frameHeight;
-
-                //calculate picture position
-                int posX = (BoxWidth - frameWidth) / 2;
-                int posY = (BoxHeight - frameHeight) / 2;
-
-                // Draw the current frame scaled to fit the window
-                SplashKit.DrawBitmap(currentFrame, posX, posY, SplashKit.OptionScaleBmp(scaleX, scaleY));
-                SplashKit.RefreshScreen(120);
-            }
         }
     }
 }
