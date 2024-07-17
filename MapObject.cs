@@ -60,5 +60,20 @@ namespace OOP_custom_project
             }
             return frames;
         }
+        public int[,] CollectMaterial()
+        {
+            int[,] matrix = new int[1000, 700];
+            Random random = new Random();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 700; j++)
+                {
+                    matrix[i, j] = random.Next(2); // Generates random 0 or 1
+                }
+            }
+
+            return matrix;
+        }
     }
 }
