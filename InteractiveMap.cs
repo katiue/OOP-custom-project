@@ -18,7 +18,7 @@ namespace OOP_custom_project
         public InteractiveMap(Window window, Game game)
         {
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
-            _zoom = 1.0f;
+            _zoom = 1.7f;
             _offsetX = 0.0f;
             _offsetY = 0.0f;
             AddingObject = null;
@@ -135,7 +135,7 @@ namespace OOP_custom_project
             // Handle input for zooming
             Vector2D scroll = SplashKit.MouseWheelScroll();
             // Calculate the new zoom level
-            //if ((_zoom + (float)scroll.Y / 10.0f > 1.7f) && (_zoom + (float)scroll.Y / 10.0f < 3f))
+            if ((_zoom + (float)scroll.Y / 10.0f > 1.7f) && (_zoom + (float)scroll.Y / 10.0f < 3f))
             {
                 _zoom += (float)scroll.Y / 10.0f;
             }
@@ -155,15 +155,6 @@ namespace OOP_custom_project
                             addedobj = new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04);
                             _zones.Add(addedobj);
                             break;
-                        /*case "ToolboxSmashing":
-                            addedobj = new Bitmap("Smashing_hammer", @"D:\OOP-custom-project\Smashing_hammer\frame_00_delay-0.03s.png");
-                            break;
-                        case "ToolboxPouring":
-                            addedobj = new Bitmap("Pouring-molten-metal", @"D:\OOP-custom-project\Pouring-molten-metal\frame_00_delay-0.1s.png");
-                            break;
-                        case "ToolboxDrawing":
-                            addedobj = new Bitmap("Drawing", @"D:\OOP-custom-project\Drawing\frame_00_delay-0.1s.png");
-                            break;*/
                     }
                     AddingObject = null;
                 }

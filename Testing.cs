@@ -17,31 +17,19 @@ namespace OOP_custom_project
 
         public void MakeMapObjectLayer()
         {
-            Window window = new Window("Game screen", 1090, 700);
+            Window window = new Window("Game screen", 1090, 820);
             do
             {
                 SplashKit.ProcessEvents();
                 SplashKit.ClearScreen();
 
-                Layer = new Bitmap("Layer", (int)(_mapImage.Width * _zoom), (int)(_mapImage.Height * _zoom));
-                // Create a new bitmap with a transparent background
-                Bitmap baseImage = new Bitmap("BaseImage", _mapImage.Width, _mapImage.Height);
-                baseImage.Clear(Color.RGBAColor(0, 0, 0, 0));
-                // Load the original image
+                SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY);
 
-                Bitmap originalImg = SplashKit.LoadBitmap("OverlayImage", "D:\\OOP-custom-project\\map.webp");
-                /*int a = originalImg.Width;
-                int b = originalImg.Height;
-
-                // Create a new bitmap with scaled dimensions
-                Bitmap scaledImg = new Bitmap("Scaled Image", (int)_zoom * a, (int)_zoom * b);
-
-
-                // Draw the scaled image onto the new bitmap
-                scaledImg.Clear(Color.Black); // Clear the surface with transparent color
-                originalImg.DrawBitmap(scaledImg, 0, 0, SplashKit.OptionScaleBmp(_zoom, _zoom));*/
-
-                SplashKit.DrawBitmap(originalImg, _offsetX, _offsetY);
+                DefineZone difineZone = new DefineZone();
+                foreach (var zone in difineZone.mineralZones)
+                {
+                    SplashKit.FillRectangle(zone._mineral._color, zone.startX + _offsetX, zone.startY + _offsetY, zone.endX - zone.startX, zone.endY - zone.startY);
+                }
 
                 // Handle input for zooming
                 Vector2D scroll = SplashKit.MouseWheelScroll();
@@ -55,12 +43,12 @@ namespace OOP_custom_project
                     _offsetX += (float)pos.X;
                     _offsetY += (float)pos.Y;
                 }
-                Console.WriteLine(_offsetX + " " + _offsetY);
-                // Free resources
-                //originalImg.Free();
-                //scaledImg.Free();
+                if(SplashKit.MouseClicked(MouseButton.LeftButton))
+                {
+                    Console.WriteLine("Mouse clicked at: " + SplashKit.MouseX() + " " + SplashKit.MouseY());
+                }   
 
-                SplashKit.RefreshScreen(120);
+                SplashKit.RefreshScreen(30);
             } while (!window.CloseRequested);
         }
     }
