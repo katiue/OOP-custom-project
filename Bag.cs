@@ -3,40 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SplashKitSDK;
 
 namespace OOP_custom_project
 {
-    public class Bag : Item, IHaveInventory
+    public class Bag
     {
-        private Inventory _inventory;
-        public Bag(string[] ids, string name, string desc) : base(ids, name, desc)
+        private MineralBag _mineralbag;
+        private Database _database;
+        public Bag()
         {
-            _inventory = new Inventory();
+            _database = new Database();
+            _mineralbag = new MineralBag(new string[] {"Mineral bag"}, "Mineral bag", "Bag to store mineral");
+            AddMineral();
         }
-        public GameObject Locate(string id)
+        private void AddMineral()
         {
-            if (AreYou(id))
-            {
-                return this;
-            }
-            else
-            {
-                return _inventory.Fetch(id);
-            }
+            _mineralbag.Inventory.Put(_database.ImportMineralsFromExcel(@"D:\OOP-custom-project\Mineral.xlsx"));
         }
-        public override string FullDescription
+        public MineralBag MineralBag
         {
             get
             {
-                return "In the " + Name + " you can see:\n " + _inventory.ItemList;
+                return _mineralbag;
             }
         }
-        public Inventory Inventory
+        public void Draw()
         {
-            get
-            {
-                return _inventory;
-            }
+            SplashKit.FillRectangle(Color.RGBAColor(128, 128, 128, 64), 0, 0, 1000, 700);
+            _mineralbag.Draw();
+        }
+        public void SaveFile()
+        {
+            _database.ExportMineralsToExcel(_mineralbag.Inventory.Mineral, @"D:\OOP-custom-project\Mineral.xlsx");
         }
     }
 }

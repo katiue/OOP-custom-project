@@ -17,7 +17,6 @@ namespace OOP_custom_project
             {
                 _identifiers.Add(idents[i].ToLower());
             }
-
         }
 
         public bool AreYou(string id)
@@ -36,7 +35,6 @@ namespace OOP_custom_project
                 else
                 {
                     return _identifiers.First();
-
                 }
             }
         }

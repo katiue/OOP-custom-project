@@ -25,7 +25,7 @@ namespace OOP_custom_project
 
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY);
 
-                DefineZone difineZone = new DefineZone();
+                DefineMineral difineZone = new DefineMineral();
                 foreach (var zone in difineZone.mineralZones)
                 {
                     SplashKit.FillRectangle(zone._mineral._color, zone.startX + _offsetX, zone.startY + _offsetY, zone.endX - zone.startX, zone.endY - zone.startY);

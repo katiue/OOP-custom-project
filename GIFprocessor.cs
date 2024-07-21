@@ -10,7 +10,6 @@ namespace OOP_custom_project
         private int _currentFrame;
         private readonly double _frameDuration; // Duration for each frame in seconds
         private readonly Bitmap[] _frames;
-
         public GIFprocessor(string baseName, int frameCount, double frameDuration)
         {
             _frameDuration = frameDuration;
@@ -18,7 +17,6 @@ namespace OOP_custom_project
             _lastFrameTime = DateTime.Now;
             _frames = LoadGifFrames(baseName, frameCount, frameDuration);
         }
-
         private static Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
         {
             Bitmap[] frames = new Bitmap[frameCount];
@@ -60,7 +58,6 @@ namespace OOP_custom_project
             }
             return frames;
         }
-
         public void ShowGifFrames(Window window)
         {
             while(_currentFrame < _frames.Length-1)

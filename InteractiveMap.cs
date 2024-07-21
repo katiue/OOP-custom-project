@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Threading;
 using SplashKitSDK;
 
@@ -6,17 +7,22 @@ namespace OOP_custom_project
 {
     public class InteractiveMap
     {
-        private Bitmap _mapImage;
         private float _zoom;
         private float _offsetX, _offsetY;
-        private List<MapObject> _zones;
-        private Window window;
+        private bool notification = false;
+        private Bitmap _mapImage;
         private Bitmap? AddingObject;
         private Bitmap[] tools;
-        public string ChangeScreen = "";
+        private Window window;
+        private Game _game;
+        private List<MapObject> _zones;
+        private List<Mineral> obtainedmineral;
+        private DefineMineral definezone = new DefineMineral();
 
         public InteractiveMap(Window window, Game game)
         {
+            obtainedmineral = new List<Mineral>();
+            _game = game;
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
             _zoom = 1.7f;
             _offsetX = 0.0f;
@@ -25,20 +31,19 @@ namespace OOP_custom_project
             // Initialize zones
             _zones = new List<MapObject>
             {
-                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 100, Y = 100, Width = 200, Height = 200 }, 49, 0.04),
-                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 }, 49, 0.04)
+                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 100, Y = 100, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(100, 100)),
+                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(300, 300))
                 // Add more zones as needed
             };
             this.window = window;
 
             tools = [
+                new Bitmap("PikachuMiner", @"D:\OOP-custom-project\pikachu_mining\frame_0_delay-0.1s.png"),
                 new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"),
-                new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"),
-                new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"),
-                new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png")
+                new Bitmap("BombMining", @"D:\OOP-custom-project\Bomb_miner_removeBG\frame_00_delay-0.04s.png"),
+                new Bitmap("Examine", @"D:\OOP-custom-project\Magnifier.png")
             ];
         }
-
         public void Draw()
         {
             int _currentFrame = 0;
@@ -91,19 +96,31 @@ namespace OOP_custom_project
                     double posY = midY + _offsetY - ((midY - addY) * _zoom);
 
                     // Check for mouse clicks
-                    if (SplashKit.MouseDown(MouseButton.RightButton))
+                    if (SplashKit.MouseClicked(MouseButton.RightButton))
                     {
                         float mouseX = SplashKit.MouseX();
                         float mouseY = SplashKit.MouseY();
 
                         if (SplashKit.PointInRectangle(mouseX, mouseY, posX, posY, scaledArea.Width * _zoom, scaledArea.Height * _zoom))
                         {
-                            CollectMaterial(zone);
-                            ChangeScreen = "molding";
-                            Console.WriteLine(ChangeScreen);
+                            Mineral mineral = new Mineral(new string[] { "test" }, "testing", "testing", CollectMaterial(zone));
+                            obtainedmineral.Add(mineral);
+                            _game.bag.MineralBag.Inventory.Put(mineral);
+                            _game.ChangeScreen("bag");
+                            notification = true;
                         }
                     }
                     ShowObjectGifFrames(window, zone, _currentFrame, baseImage);
+                }
+                if(notification)
+                {
+                    if (SplashKit.MouseDown(MouseButton.LeftButton))
+                    {
+                        notification = false;
+                        obtainedmineral.Clear();
+                        return;
+                    }
+                    SplashKit.DrawBitmap(DrawObtained(), 400, 400, SplashKit.OptionScaleBmp(2,2));
                 }
                 SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
                 baseImage.Free();
@@ -122,20 +139,15 @@ namespace OOP_custom_project
                 }
                 DrawToolBox();
                 Update();
-                if(ChangeScreen != "")
-                {                     
-                    break;
-                }
                 SplashKit.RefreshScreen(120);
             }
         }
-
         public void Update()
         {
             // Handle input for zooming
             Vector2D scroll = SplashKit.MouseWheelScroll();
             // Calculate the new zoom level
-            if ((_zoom + (float)scroll.Y / 10.0f > 1.7f) && (_zoom + (float)scroll.Y / 10.0f < 3f))
+            if ((_zoom + (float)scroll.Y / 10.0f > 1.7f) && (_zoom + (float)scroll.Y / 10.0f < 3.1f))
             {
                 _zoom += (float)scroll.Y / 10.0f;
             }
@@ -151,8 +163,20 @@ namespace OOP_custom_project
                     double addY = (SplashKit.MouseY() - (_offsetY - (_mapImage.Height * _zoom - _mapImage.Height) / 2))/_zoom;
                     switch (AddingObject.Name)
                     {
+                        case "PikachuMiner":
+                            addedobj = new MapObject(@"D:\OOP-custom-project\pikachu_mining\", new Rectangle() { X = addX, Y = addY, Width = 150, Height = 150 }, 2, 0.1, definezone.AssignMineral(addX - 100, addY - 100));
+                            _zones.Add(addedobj);
+                            break;
                         case "ToolboxMining":
-                            addedobj = new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04);
+                            addedobj = new MapObject(@"D:\OOP-custom-project\Mining_removedbg2\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
+                            _zones.Add(addedobj);
+                            break;
+                        case "BombMining":
+                            addedobj = new MapObject(@"D:\OOP-custom-project\Bomb_miner_removeBG\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
+                            _zones.Add(addedobj);
+                            break;
+                        case "Examine":
+                            addedobj = new MapObject(@"D:\OOP-custom-project\Bomb_miner\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
                             _zones.Add(addedobj);
                             break;
                     }
@@ -183,15 +207,12 @@ namespace OOP_custom_project
             if (_offsetX < -1160) _offsetX = -1160;
             if (_offsetY < -920) _offsetY = -920;
         }
-
-        private int[,] CollectMaterial(MapObject zone)
+        private MineralType CollectMaterial(MapObject zone)
         {
             // Collect material from the zone
-            return zone.CollectMaterial();
+            return definezone.AssignMineral(zone.Area.X, zone.Area.Y);
         }
-
-
-        public void ShowObjectGifFrames(Window window, MapObject obj, int _currentFrame, Bitmap baseImage)
+        private void ShowObjectGifFrames(Window window, MapObject obj, int _currentFrame, Bitmap baseImage)
         {
             _currentFrame = (_currentFrame % obj._frames.Length );
             // Get the dimensions of the box
@@ -210,7 +231,7 @@ namespace OOP_custom_project
             // Draw the current frame scaled to fit the box
             SplashKit.DrawBitmapOnBitmap(baseImage, currentFrame, obj.Area.X - frameWidth / 2, obj.Area.Y - frameHeight / 2, SplashKit.OptionScaleBmp(scaleX, scaleY));
         }
-        public void DrawToolBox()
+        private void DrawToolBox()
         {
             SplashKit.FillRectangle(Color.White, 0, 0, 100, 320);
 
@@ -226,20 +247,45 @@ namespace OOP_custom_project
                 SplashKit.DrawBitmap(tools[i], posX, posY, SplashKit.OptionScaleBmp(scaleX, scaleY));
             }
         }
-        public Bitmap DragTool()
+        private Bitmap DragTool()
         {
             float mouseX = SplashKit.MouseX();
             float mouseY = SplashKit.MouseY();
 
             if (SplashKit.PointInRectangle(mouseX, mouseY, 0, 0, 100, 400))
             {
-                AddingObject = tools[(int)mouseY % (400/100)];
+                AddingObject = tools[(int)(mouseY / 100)];
             }
             else if(AddingObject != null)
             {
                 AddingObject = null;
             }
             return AddingObject;
+        }
+        private Bitmap DrawObtained()
+        {
+            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\ObtainFrame.png");
+            Bitmap baseimg = new Bitmap("bitmap", obtained.Width, obtained.Height+20);
+            baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
+            SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
+            SplashKit.DrawTextOnBitmap(baseimg, "Obtained", Color.WhiteSmoke, "Arial", 0, 110, 30);
+            if(obtainedmineral.Count == 1)
+            {
+                obtainedmineral[0].Draw(0,0,0.1);
+                showdetails(obtainedmineral[0]);
+            }
+            SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height -  20);
+            return baseimg;
+        }
+        private void showdetails(Mineral mineral)
+        {
+            Bitmap bitmap = new Bitmap("bitmap", 200, 200);
+            bitmap.Clear(Color.RGBAColor(0, 0, 0, 0));
+            //show details of the mineral
+            SplashKit.DrawTextOnBitmap(bitmap,"Type: " + mineral.Type._name, Color.White, "Arial", 20, 30, 70);
+            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.White, "Arial", 20, 30, 90);
+            SplashKit.DrawTextOnBitmap(bitmap, "Size: " + Math.Abs(mineral.Area), Color.White, "Arial", 20, 30, 110);
+            SplashKit.DrawBitmap(bitmap, 600, 400, SplashKit.OptionScaleBmp(1.5,1.5));
         }
     }
 }

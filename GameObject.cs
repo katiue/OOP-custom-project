@@ -8,13 +8,22 @@ namespace OOP_custom_project
 {
     public class GameObject : IdentifiableObject
     {
+        private string[] _ids;
         private string _name;
         private string _description;
 
         public GameObject(string[] ids,string name , string desc) : base(ids)
         {
+            _ids = ids;
             _description = desc;
             _name = name;
+        }
+        public string[] ID
+        {
+            get
+            {
+                return _ids;
+            }
         }
         public string Name
         {
@@ -23,7 +32,6 @@ namespace OOP_custom_project
                 return _name;
             }
         }
-
         public string ShortDescription
         {
             get

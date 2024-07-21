@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace OOP_custom_project
 {
-    public class Inventory
+    public class MineralInventory
     {
-        private List<Item> _items;
-        public Inventory()
+        private List<Mineral> mineral;
+        public MineralInventory()
         {
-            _items = new List<Item>();
+            mineral = new List<Mineral>();
         }
         public bool HasItem(string id)
         {
-            foreach (Item i in _items)
+            foreach (var i in mineral)
             {
                 if (i.AreYou(id))
                 {
@@ -25,19 +25,26 @@ namespace OOP_custom_project
             }
             return false;
         }
-        public void Put(Item itm)
+        public void Put(Mineral itm)
         {
-            _items.Add(itm);
+            mineral.Add(itm);
         }
-        public Item Take(string id)
-        {   
-            Item takenItem = Fetch(id);
-            _items.Remove(takenItem);
+        public void Put(List<Mineral> itm)
+        {
+            foreach (var i in itm)
+            {
+                mineral.Add(i);
+            }
+        }
+        public Mineral Take(string id)
+        {
+            Mineral takenItem = Fetch(id);
+            mineral.Remove(takenItem);
             return takenItem;
         }
-        public Item Fetch(string id)
+        public Mineral Fetch(string id)
         {
-            foreach (Item i in _items)
+            foreach (var i in mineral)
             {
                 if (i.AreYou(id))
                 {
@@ -46,16 +53,11 @@ namespace OOP_custom_project
             }
             return null;
         }
-        public string ItemList
+        public List<Mineral> Mineral
         {
             get
             {
-                string ItemList = "";
-                foreach (Item i in _items)
-                {
-                    ItemList += i.ShortDescription + "\n";
-                }
-                return ItemList;
+                return mineral;
             }
         }
     }

@@ -10,15 +10,17 @@ namespace OOP_custom_project
     public class Game
     {
 
-        public string current_screen_type = "see map";
-        public Game() { }
+        private string current_screen_type = "bag";
+        public Bag bag;
+        public Game() 
+        {
+            bag = new Bag();
+        }
         public void Run()
         {
             Window window = new Window("Game screen", 1000, 700);
             GIFprocessor GifFile;
-            CustomShape shape = new CustomShape(window);
             InteractiveMap map = new InteractiveMap(window, this);
-
             do
             {
                 SplashKit.ProcessEvents();
@@ -27,7 +29,6 @@ namespace OOP_custom_project
                 switch (current_screen_type)
                 {
                     case "starting":
-                        shape.Draw(Color.Blue);
                         break;
                     case "molding":
                         GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
@@ -37,21 +38,16 @@ namespace OOP_custom_project
                         GifFile = new GIFprocessor("D:\\OOP-custom-project\\Smashing_hammer", 20, 0.03);
                         GifFile.ShowGifFrames(window);
                         break;
-                    case "drawing":
-                        shape.Drawing();
-                        break;
-                    case "see map":
+                    case "map":
                         map.Draw();
-                        if(map.ChangeScreen != "")
-                        {
-                            ChangeScreen(map.ChangeScreen);
-                        }
+                        break;
+                    case "bag":
+                        bag.Draw();
                         break;
                 }
-
                 SplashKit.RefreshScreen(60);
-
             } while (!window.CloseRequested);
+            bag.SaveFile();
         }
         public void ChangeScreen(string new_screen_type)
         {

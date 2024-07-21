@@ -9,14 +9,14 @@ namespace OOP_custom_project
 {
     public class MineralZone : GameObject
     {
-        public Mineral _mineral;
+        public MineralType _mineral;
         public int Max_quantity;
         public double startX;
         public double startY;
         public double endX;
         public double endY;
 
-        public MineralZone(string[] ids, string name, string desc, Mineral mineral, int quantity, double startX, double startY, double endX, double endY) : base(ids, name, desc)
+        public MineralZone(string[] ids, string name, string desc, MineralType mineral, int quantity, double startX, double startY, double endX, double endY) : base(ids, name, desc)
         {
             _mineral = mineral;
             Max_quantity = quantity;
