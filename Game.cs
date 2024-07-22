@@ -10,7 +10,7 @@ namespace OOP_custom_project
     public class Game
     {
 
-        private string current_screen_type = "bag";
+        private string current_screen_type = "map";
         public Bag bag;
         public Game() 
         {
@@ -45,7 +45,7 @@ namespace OOP_custom_project
                         bag.Draw();
                         break;
                 }
-                SplashKit.RefreshScreen(60);
+                SplashKit.RefreshScreen(120);
             } while (!window.CloseRequested);
             bag.SaveFile();
         }

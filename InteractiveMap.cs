@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Net.Http.Headers;
-using System.Threading;
+using OfficeOpenXml;
 using SplashKitSDK;
 
 namespace OOP_custom_project
@@ -103,11 +104,26 @@ namespace OOP_custom_project
 
                         if (SplashKit.PointInRectangle(mouseX, mouseY, posX, posY, scaledArea.Width * _zoom, scaledArea.Height * _zoom))
                         {
-                            Mineral mineral = new Mineral(new string[] { "test" }, "testing", "testing", CollectMaterial(zone));
-                            obtainedmineral.Add(mineral);
-                            _game.bag.MineralBag.Inventory.Put(mineral);
-                            _game.ChangeScreen("bag");
-                            notification = true;
+                            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
+                            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                            using (ExcelPackage package = new ExcelPackage(fileInfo))
+                            {
+                                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
+
+                                if (worksheet == null)
+                                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
+
+                                //use the newest id to add new mineral
+                                int rows = worksheet.Dimension.Rows;
+                                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+                                idCellValue = (int.Parse(idCellValue) + 1).ToString();
+
+                                Mineral mineral = new Mineral(new string[] { idCellValue }, "", "", CollectMaterial(zone));
+                                obtainedmineral.Add(mineral);
+                                _game.bag.MineralBag.Inventory.Put(mineral);
+                                _game.ChangeScreen("bag");
+                                notification = true;
+                            }
                         }
                     }
                     ShowObjectGifFrames(window, zone, _currentFrame, baseImage);

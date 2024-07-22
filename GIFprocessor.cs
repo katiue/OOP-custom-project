@@ -95,7 +95,7 @@ namespace OOP_custom_project
 
                 // Draw the current frame scaled to fit the window
                 SplashKit.DrawBitmap(currentFrame, posX, posY, SplashKit.OptionScaleBmp(scaleX,scaleY));
-                SplashKit.RefreshScreen(120);
+                SplashKit.RefreshScreen(60);
             }
         }
     }
