@@ -31,19 +31,19 @@ namespace OOP_custom_project
         {
             double roll = random.NextDouble();
             int dis;
-            if (roll < 0.50)
+            if (roll < 0.40)
             {
                 dis = random.Next(20, 100 + 1);
             }
-            else if (roll < 0.70)
+            else if (roll < 0.65)
             {
                 dis = random.Next(101, 170 + 1);
             }
-            else if (roll < 0.90)
+            else if (roll < 0.85)
             {
                 dis = random.Next(171, 230 + 1);
             }
-            else if (roll < 0.9975)
+            else if (roll < 0.95)
             {
                 dis = random.Next(231, 250 + 1);
             }

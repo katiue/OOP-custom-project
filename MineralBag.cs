@@ -9,10 +9,10 @@ namespace OOP_custom_project
 {
     public class MineralBag : Item, IHaveInventory
     {
+        private Mineral? showing;
         private MineralInventory _inventory;
         private DisplayMined? _display;
         private bool _isDrawing;
-        private int showing;
         public MineralBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
             _inventory = new MineralInventory();
@@ -46,18 +46,18 @@ namespace OOP_custom_project
         {
             if (SplashKit.KeyTyped(KeyCode.EscapeKey))
             {
-                _isDrawing = false;
+                _inventory.Put(showing);
+                showing = null;
             }
-            if (_isDrawing)
-                DisplayMineral(_inventory.Mineral[showing]);
+            if (showing != null)
+                DisplayMineral(showing);
             for (int i = 0; i < _inventory.Mineral.Count; i++)
             {
                 if (SplashKit.MouseClicked(MouseButton.LeftButton)&& SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 100 * (i % 8) + 164, 100 * (i / 8) + 64, 70, 70))
                 {
-                    _isDrawing = true;
-                    showing = i;
+                    showing = _inventory.Take(_inventory.Mineral[i].ID[0]);
                 }
-                if(!_isDrawing)
+                if(showing == null)
                 {
                     _display = null;
                     _inventory.Mineral[i].Draw((i % 8) * 100 - 300, (i / 8) * 100 - 400, 0.07);

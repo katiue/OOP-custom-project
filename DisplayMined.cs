@@ -12,6 +12,7 @@ namespace OOP_custom_project
         private GachaMineral gacha = new GachaMineral();
         private List<Mineral> minerals = new List<Mineral>();
         private bool showbag = false;
+        private double total = 0;
         public DisplayMined(Window window, Mineral mineral)
         {
             this.window = window;
@@ -20,12 +21,17 @@ namespace OOP_custom_project
         public void Drawing(MineralInventory _inventory)
         {
 
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 650, 500, 300, 100) && !showbag)
+            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 650, 500, 300, 100) && !showbag && total > 30000)
             {
                 Point2D pt = new Point2D();
                 pt.X = gacha.Pull();
                 pt.Y = gacha.Pull();
                 mineral.showedPoints.Add(pt);
+                foreach(var m in minerals)
+                {
+                    _inventory.Take(m.ID[0]);
+                }
+                minerals.Clear();
             }
 
             double scaleX = (double)window.Width / (double)background.Width;
@@ -36,17 +42,25 @@ namespace OOP_custom_project
             Bitmap bitmap = new Bitmap("Detail", 300, 200);
             bitmap.Clear(Color.Wheat);
 
-            SplashKit.DrawTextOnBitmap(bitmap, "Detail", Color.AliceBlue, "Arial", 12, 30, 10);
-            SplashKit.DrawTextOnBitmap(bitmap, "Type: " + mineral.Type._name, Color.White, "Arial", 12, 10, 30);
-            SplashKit.DrawTextOnBitmap(bitmap, "Area: " + mineral.Area, Color.White, "Arial", 12, 10, 40);
-            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.White, "Arial", 12, 10, 50);
-            SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + mineral.Type + "/5000", Color.White, "Arial", 12, 10, 80);
+            SplashKit.DrawTextOnBitmap(bitmap, "Detail", Color.DarkRed, "Arial", 12, 30, 10);
+            SplashKit.DrawTextOnBitmap(bitmap, "Type: " + mineral.Type._name, Color.Black, "Arial", 12, 10, 30);
+            SplashKit.DrawTextOnBitmap(bitmap, "Area: " + mineral.Area, Color.Black, "Arial", 12, 10, 40);
+            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.Black, "Arial", 12, 10, 50);
+            if(minerals.Count != 0)
+            {
+                total = 0;
+                foreach(var m in minerals)
+                {
+                    total += m.Area;
+                }
+                SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/30000", Color.White, "Arial", 12, 10, 80);
+            }
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
             SplashKit.FillRectangle(Color.White,650,500,300,100);
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
             {
-                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 )
+                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag)
                 {
                     int x = (int)(SplashKit.MouseX() - 400) / 100;
                     int y = (int)SplashKit.MouseY() / 100;
@@ -76,7 +90,7 @@ namespace OOP_custom_project
             }
             if (showbag)
             {
-                SplashKit.FillRectangle(Color.Wheat, 500, 0, 500, 700);
+                SplashKit.FillRectangle(Color.BlanchedAlmond, 500, 0, 500, 700);
                 for (int j = 0; j < _inventory.Mineral.Count; j++)
                 {
                     _inventory.Mineral[j].Draw((j % 5) * 100 + 50, (j / 5) * 100 - 450, 0.07);
