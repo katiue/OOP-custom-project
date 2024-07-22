@@ -21,7 +21,7 @@ namespace OOP_custom_project
         public void Drawing(MineralInventory _inventory)
         {
 
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 650, 500, 300, 100) && !showbag && total > 30000)
+            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 640, 470, 320, 160) && !showbag && total > 30000)
             {
                 Point2D pt = new Point2D();
                 pt.X = gacha.Pull();
@@ -46,21 +46,21 @@ namespace OOP_custom_project
             SplashKit.DrawTextOnBitmap(bitmap, "Type: " + mineral.Type._name, Color.Black, "Arial", 12, 10, 30);
             SplashKit.DrawTextOnBitmap(bitmap, "Area: " + mineral.Area, Color.Black, "Arial", 12, 10, 40);
             SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.Black, "Arial", 12, 10, 50);
-            if(minerals.Count != 0)
+            total = 0;
+            foreach(var m in minerals)
             {
-                total = 0;
-                foreach(var m in minerals)
-                {
-                    total += m.Area;
-                }
-                SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/30000", Color.White, "Arial", 12, 10, 80);
+                total += m.Area;
             }
+            SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/30000", Color.Black, "Arial", 12, 10, 80);
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
-            SplashKit.FillRectangle(Color.White,650,500,300,100);
+
+            //draw upgrade button
+            Bitmap button = new Bitmap("Upgrade", @"D:\OOP-custom-project\Upgrade_button.png");
+            SplashKit.DrawBitmap(button, 500,400, SplashKit.OptionScaleBmp(0.6,0.5));
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
             {
-                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag)
+                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag && total < 30000)
                 {
                     int x = (int)(SplashKit.MouseX() - 400) / 100;
                     int y = (int)SplashKit.MouseY() / 100;
@@ -81,6 +81,11 @@ namespace OOP_custom_project
                 }
                 else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 40, 390, 400, 44))
                 {
+                    int checkitm = (int)(SplashKit.MouseX() - 40)/44;
+                    if (checkitm < minerals.Count)
+                    {
+                        minerals.RemoveAt(checkitm);
+                    }
                     showbag = true;
                 }
                 else

@@ -13,6 +13,14 @@ namespace OOP_custom_project
         }
         public void ExportMineralsToExcel(List<Mineral> minerals, string filePath)
         {
+            if(minerals.Count < 1)
+            {
+                return;
+            }
+
+            // Sort minerals by ID
+            var sortedMinerals = minerals.OrderBy(m => m.ID[0]).ToList();
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using (ExcelPackage package = new ExcelPackage())
@@ -32,9 +40,9 @@ namespace OOP_custom_project
                 worksheet.Cells[1, 10].Value = "Showed Points";
 
                 // Adding mineral data
-                for (int i = 0; i < minerals.Count; i++)
+                for (int i = 0; i < sortedMinerals.Count; i++)
                 {
-                    Mineral mineral = minerals[i];
+                    Mineral mineral = sortedMinerals[i];
                     worksheet.Cells[i + 2, 1].Value = string.Join(",", mineral.ID);
                     worksheet.Cells[i + 2, 2].Value = mineral.Name;
                     worksheet.Cells[i + 2, 3].Value = mineral.ShortDescription;
@@ -52,6 +60,7 @@ namespace OOP_custom_project
                 package.SaveAs(fileInfo);
             }
         }
+
         public List<Mineral> ImportMineralsFromExcel(string filePath)
         {
             List<Mineral> minerals = new List<Mineral>();

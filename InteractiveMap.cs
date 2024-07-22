@@ -116,8 +116,10 @@ namespace OOP_custom_project
                                 //use the newest id to add new mineral
                                 int rows = worksheet.Dimension.Rows;
                                 string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-                                idCellValue = (int.Parse(idCellValue) + 1).ToString();
-
+                                if(rows > 1)
+                                    idCellValue = (int.Parse(idCellValue) + 1).ToString();
+                                else
+                                    idCellValue = "1";
                                 Mineral mineral = new Mineral(new string[] { idCellValue }, "", "", CollectMaterial(zone));
                                 obtainedmineral.Add(mineral);
                                 _game.bag.MineralBag.Inventory.Put(mineral);
@@ -126,8 +128,13 @@ namespace OOP_custom_project
                             }
                         }
                     }
+
+                    //Run objects animation
                     ShowObjectGifFrames(window, zone, _currentFrame, baseImage);
                 }
+                //Draw animation layer
+                SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
+
                 if(notification)
                 {
                     if (SplashKit.MouseDown(MouseButton.LeftButton))
@@ -138,7 +145,6 @@ namespace OOP_custom_project
                     }
                     SplashKit.DrawBitmap(DrawObtained(), 400, 400, SplashKit.OptionScaleBmp(2,2));
                 }
-                SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
                 baseImage.Free();
 
                 if(AddingObject != null)

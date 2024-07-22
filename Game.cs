@@ -14,7 +14,7 @@ namespace OOP_custom_project
         public Bag bag;
         public Game() 
         {
-            bag = new Bag();
+            bag = new Bag(this);
         }
         public void Run()
         {

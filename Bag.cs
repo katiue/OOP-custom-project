@@ -11,11 +11,13 @@ namespace OOP_custom_project
     {
         private MineralBag _mineralbag;
         private Database _database;
-        public Bag()
+        private Game _game;
+        public Bag(Game game)
         {
             _database = new Database();
-            _mineralbag = new MineralBag(new string[] {"Mineral bag"}, "Mineral bag", "Bag to store mineral");
+            _mineralbag = new MineralBag(new string[] { "Mineral bag" }, "Mineral bag", "Bag to store mineral");
             AddMineral();
+            _game = game;
         }
         private void AddMineral()
         {
@@ -32,6 +34,10 @@ namespace OOP_custom_project
         {
             SplashKit.FillRectangle(Color.RGBAColor(128, 128, 128, 64), 0, 0, 1000, 700);
             _mineralbag.Draw();
+            if(SplashKit.KeyDown(KeyCode.EscapeKey))
+            {
+                _game.ChangeScreen("map");
+            }
         }
         public void SaveFile()
         {

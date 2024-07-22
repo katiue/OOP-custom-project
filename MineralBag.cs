@@ -12,7 +12,6 @@ namespace OOP_custom_project
         private Mineral? showing;
         private MineralInventory _inventory;
         private DisplayMined? _display;
-        private bool _isDrawing;
         public MineralBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
             _inventory = new MineralInventory();
@@ -44,9 +43,11 @@ namespace OOP_custom_project
         }
         public void Draw()
         {
-            if (SplashKit.KeyTyped(KeyCode.EscapeKey))
+            Window window = SplashKit.CurrentWindow();
+            if (SplashKit.KeyTyped(KeyCode.EscapeKey) || window.CloseRequested)
             {
-                _inventory.Put(showing);
+                if(showing != null)
+                    _inventory.Put(showing);
                 showing = null;
             }
             if (showing != null)
@@ -60,8 +61,10 @@ namespace OOP_custom_project
                 if(showing == null)
                 {
                     _display = null;
-                    _inventory.Mineral[i].Draw((i % 8) * 100 - 300, (i / 8) * 100 - 400, 0.07);
+                    if (_inventory.Mineral[i] != null)
+                        _inventory.Mineral[i].Draw((i % 8) * 100 - 300, (i / 8) * 100 - 400, 0.07);
                 }
+                SplashKit.DrawText(_inventory.Mineral[i].Type._name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140);
             }
         }
         private void DisplayMineral(Mineral mineral)
