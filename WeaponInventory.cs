@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -9,14 +10,14 @@ namespace OOP_custom_project
 {
     public class WeaponInventory
     {
-        private List<Item> _items;
+        private List<Weapon> component;
         public WeaponInventory()
         {
-            _items = new List<Item>();
+            component = new List<Weapon>();
         }
         public bool HasItem(string id)
         {
-            foreach (Item i in _items)
+            foreach (Weapon i in component)
             {
                 if (i.AreYou(id))
                 {
@@ -25,19 +26,26 @@ namespace OOP_custom_project
             }
             return false;
         }
-        public void Put(Item itm)
+        public void Put(Weapon itm)
         {
-            _items.Add(itm);
+            component.Add(itm);
         }
-        public Item Take(string id)
-        {   
-            Item takenItem = Fetch(id);
-            _items.Remove(takenItem);
+        public void Put(List<Weapon> itm)
+        {
+            foreach (var i in itm)
+            {
+                component.Add(i);
+            }
+        }
+        public Weapon Take(string id)
+        {
+            Weapon takenItem = Fetch(id);
+            component.Remove(takenItem);
             return takenItem;
         }
-        public Item Fetch(string id)
+        public Weapon Fetch(string id)
         {
-            foreach (Item i in _items)
+            foreach (Weapon i in component)
             {
                 if (i.AreYou(id))
                 {
@@ -46,16 +54,11 @@ namespace OOP_custom_project
             }
             return null;
         }
-        public string ItemList
+        public List<Weapon> ComponentList
         {
             get
             {
-                string ItemList = "";
-                foreach (Item i in _items)
-                {
-                    ItemList += i.ShortDescription + "\n";
-                }
-                return ItemList;
+                return component;
             }
         }
     }

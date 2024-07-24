@@ -63,8 +63,13 @@ namespace OOP_custom_project
                     _display = null;
                     if (_inventory.Mineral[i] != null)
                         _inventory.Mineral[i].Draw((i % 8) * 100 - 300, (i / 8) * 100 - 400, 0.07);
+                    SplashKit.DrawText(_inventory.Mineral[i].Type._name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140);
                 }
-                SplashKit.DrawText(_inventory.Mineral[i].Type._name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140);
+
+                if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 120, 50, 50))
+                {
+                    break;
+                }
             }
         }
         private void DisplayMineral(Mineral mineral)

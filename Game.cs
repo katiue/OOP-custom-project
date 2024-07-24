@@ -10,15 +10,17 @@ namespace OOP_custom_project
     public class Game
     {
 
-        private string current_screen_type = "map";
+        private string current_screen_type = "bag";
         public Bag bag;
+        public Window window = new Window("Game screen", 1000, 700);
+        public WeaponForging forging;
         public Game() 
         {
             bag = new Bag(this);
+            forging = new WeaponForging(this);
         }
         public void Run()
         {
-            Window window = new Window("Game screen", 1000, 700);
             GIFprocessor GifFile;
             InteractiveMap map = new InteractiveMap(window, this);
             do
@@ -34,15 +36,14 @@ namespace OOP_custom_project
                         GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
                         GifFile.ShowGifFrames(window);
                         break;
-                    case "smashing":
-                        GifFile = new GIFprocessor("D:\\OOP-custom-project\\Smashing_hammer", 20, 0.03);
-                        GifFile.ShowGifFrames(window);
-                        break;
                     case "map":
                         map.Draw();
                         break;
                     case "bag":
                         bag.Draw();
+                        break;
+                    case "forging":
+                        forging.Draw();
                         break;
                 }
                 SplashKit.RefreshScreen(120);

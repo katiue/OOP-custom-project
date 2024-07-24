@@ -11,7 +11,7 @@ namespace OOP_custom_project
         private float _offsetY, _offsetX = 0;
         public Testing()
         {
-            _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
+            _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\Image\map.webp");
             Layer = new Bitmap("Layer", (int)(_mapImage.Width*_zoom), (int)(_mapImage.Height * _zoom));
         }
 
@@ -25,7 +25,7 @@ namespace OOP_custom_project
 
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY);
 
-                DefineMineral difineZone = new DefineMineral();
+                Define difineZone = new Define();
                 foreach (var zone in difineZone.mineralZones)
                 {
                     SplashKit.FillRectangle(zone._mineral._color, zone.startX + _offsetX, zone.startY + _offsetY, zone.endX - zone.startX, zone.endY - zone.startY);

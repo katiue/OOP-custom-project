@@ -19,7 +19,7 @@ namespace OOP_custom_project
             }
 
             // Sort minerals by ID
-            var sortedMinerals = minerals.OrderBy(m => m.ID[0]).ToList();
+            var sortedMinerals = minerals.OrderBy(m => ToInt(m.ID)).ToList();
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -60,7 +60,6 @@ namespace OOP_custom_project
                 package.SaveAs(fileInfo);
             }
         }
-
         public List<Mineral> ImportMineralsFromExcel(string filePath)
         {
             List<Mineral> minerals = new List<Mineral>();
@@ -110,6 +109,92 @@ namespace OOP_custom_project
             }
             return minerals;
         }
+        public void ExportComponentsToExcel(List<Weapon> components, string filePath)
+        {
+            if (components.Count < 1)
+            {
+                return;
+            }
+
+            // Sort components by Order
+            var sortedComponents = components.OrderBy(c => ToInt(c.ID)).ToList();
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Components");
+
+                // Adding headers
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Name";
+                worksheet.Cells[1, 3].Value = "Description";
+                worksheet.Cells[1, 4].Value = "Stiffness";
+                worksheet.Cells[1, 5].Value = "ForgedTimes";
+                worksheet.Cells[1, 6].Value = "Durability";
+                worksheet.Cells[1, 7].Value = "First Mineral";
+                worksheet.Cells[1, 8].Value = "Second Mineral";
+
+                // Adding component data
+                for (int i = 0; i < sortedComponents.Count; i++)
+                {
+                    Weapon component = sortedComponents[i];
+                    worksheet.Cells[i + 2, 1].Value = string.Join(",", component.ID);
+                    worksheet.Cells[i + 2, 2].Value = component.Name;
+                    worksheet.Cells[i + 2, 3].Value = component.ShortDescription;
+                    worksheet.Cells[i + 2, 4].Value = component.Stiffness;
+                    worksheet.Cells[i + 2, 5].Value = component.ForgedTimes;
+                    worksheet.Cells[i + 2, 6].Value = component.Durability;
+                    worksheet.Cells[i + 2, 7].Value = component.Mineral1;
+                    worksheet.Cells[i + 2, 8].Value = component.Mineral2;
+                }
+
+                // Saving the file
+                FileInfo fileInfo = new FileInfo(filePath);
+                package.SaveAs(fileInfo);
+            }
+        }
+        public List<Weapon> ImportComponentsFromExcel(string filePath)
+        {
+            List<Weapon> components = new List<Weapon>();
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Components"];
+                if (worksheet == null)
+                    throw new Exception("Worksheet 'Components' not found in the Excel file.");
+
+                int rows = worksheet.Dimension.Rows;
+                for (int row = 2; row <= rows; row++)
+                {
+                    string? idCellValue = worksheet.Cells[row, 1].Value?.ToString();
+                    string? name = worksheet.Cells[row, 2].Value?.ToString();
+                    string? description = worksheet.Cells[row, 3].Value?.ToString();;
+                    string? stiffnessCellValue = worksheet.Cells[row, 4].Value?.ToString();
+                    string? forgedTimesCellValue = worksheet.Cells[row, 5].Value?.ToString();
+                    string? durabilityCellValue = worksheet.Cells[row, 6].Value?.ToString();
+                    string? mineral1 = worksheet.Cells[row, 7].Value?.ToString();
+                    string? mineral2 = worksheet.Cells[row, 8].Value?.ToString();
+
+                    if (idCellValue != null && name != null && description != null && stiffnessCellValue != null && forgedTimesCellValue != null && durabilityCellValue != null && mineral1 != null && mineral2 != null)
+                    {
+                        string[] ids = idCellValue.Split(',');
+                        int stiffness = int.Parse(stiffnessCellValue);
+                        int forgedTimes = int.Parse(forgedTimesCellValue);
+                        int durability = int.Parse(durabilityCellValue);
+
+                        Weapon component = new Weapon(ids, name, description, stiffness, forgedTimes, mineral1, mineral2);
+                        component.Durability = durability;
+
+                        components.Add(component);
+                    }
+                }
+            }
+            return components;
+        }
+
         private static Color ParseColor(string colorString)
         {
             string[] rgba = colorString.Replace("Color [", "").Replace("]", "").Split(',');
@@ -139,6 +224,15 @@ namespace OOP_custom_project
         private string PointsToString(List<Point2D> points)
         {
             return string.Join(";", points.Select(p => $"({p.X},{p.Y})"));
+        }
+        private int ToInt(string[] s)
+        {
+            int result = 0;
+            foreach (string i in s)
+            {   
+                result = result * 10 + int.Parse(i);
+            }
+            return result;
         }
     }
 }

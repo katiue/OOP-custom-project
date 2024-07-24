@@ -18,13 +18,15 @@ namespace OOP_custom_project
         private Game _game;
         private List<MapObject> _zones;
         private List<Mineral> obtainedmineral;
-        private DefineMineral definezone = new DefineMineral();
+        private Define definezone = new Define();
+        private string id;
 
         public InteractiveMap(Window window, Game game)
         {
+            id = IDgenerator();
             obtainedmineral = new List<Mineral>();
             _game = game;
-            _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\map.webp");
+            _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\Image\map.webp");
             _zoom = 1.7f;
             _offsetX = 0.0f;
             _offsetY = 0.0f;
@@ -42,7 +44,7 @@ namespace OOP_custom_project
                 new Bitmap("PikachuMiner", @"D:\OOP-custom-project\pikachu_mining\frame_0_delay-0.1s.png"),
                 new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"),
                 new Bitmap("BombMining", @"D:\OOP-custom-project\Bomb_miner_removeBG\frame_00_delay-0.04s.png"),
-                new Bitmap("Examine", @"D:\OOP-custom-project\Magnifier.png")
+                new Bitmap("Examine", @"D:\OOP-custom-project\Image\Magnifier.png")
             ];
         }
         public void Draw()
@@ -55,7 +57,7 @@ namespace OOP_custom_project
                 SplashKit.ProcessEvents();
                 SplashKit.ClearScreen();
 
-                Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\background.png");
+                Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\Image\background.png");
                 SplashKit.DrawBitmap(mapImage, _offsetX-120, _offsetY-120, SplashKit.OptionScaleBmp(2.2, 1.5));
                 SplashKit.DrawBitmapOnBitmap(_mapImage, new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
@@ -104,28 +106,14 @@ namespace OOP_custom_project
 
                         if (SplashKit.PointInRectangle(mouseX, mouseY, posX, posY, scaledArea.Width * _zoom, scaledArea.Height * _zoom))
                         {
-                            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
-                            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                            using (ExcelPackage package = new ExcelPackage(fileInfo))
-                            {
-                                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
-
-                                if (worksheet == null)
-                                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
-
-                                //use the newest id to add new mineral
-                                int rows = worksheet.Dimension.Rows;
-                                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-                                if(rows > 1)
-                                    idCellValue = (int.Parse(idCellValue) + 1).ToString();
-                                else
-                                    idCellValue = "1";
-                                Mineral mineral = new Mineral(new string[] { idCellValue }, "", "", CollectMaterial(zone));
-                                obtainedmineral.Add(mineral);
-                                _game.bag.MineralBag.Inventory.Put(mineral);
-                                _game.ChangeScreen("bag");
-                                notification = true;
-                            }
+                            int temp = int.Parse(id);
+                            temp++;
+                            id = temp.ToString();
+                            Mineral mineral = new Mineral(new string[] { id }, "", "", CollectMaterial(zone));
+                            obtainedmineral.Add(mineral);
+                            _game.bag.MineralBag.Inventory.Put(mineral);
+                            _game.ChangeScreen("bag");
+                            notification = true;
                         }
                     }
 
@@ -141,9 +129,8 @@ namespace OOP_custom_project
                     {
                         notification = false;
                         obtainedmineral.Clear();
-                        return;
                     }
-                    SplashKit.DrawBitmap(DrawObtained(), 400, 400, SplashKit.OptionScaleBmp(2,2));
+                    SplashKit.DrawBitmap(DrawObtained(), 400, 200, SplashKit.OptionScaleBmp(2,2));
                 }
                 baseImage.Free();
 
@@ -286,14 +273,14 @@ namespace OOP_custom_project
         }
         private Bitmap DrawObtained()
         {
-            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\ObtainFrame.png");
+            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
             Bitmap baseimg = new Bitmap("bitmap", obtained.Width, obtained.Height+20);
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
             SplashKit.DrawTextOnBitmap(baseimg, "Obtained", Color.WhiteSmoke, "Arial", 0, 110, 30);
             if(obtainedmineral.Count == 1)
             {
-                obtainedmineral[0].Draw(0,0,0.1);
+                obtainedmineral[0].Draw(0,-200,0.1);
                 showdetails(obtainedmineral[0]);
             }
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height -  20);
@@ -307,7 +294,28 @@ namespace OOP_custom_project
             SplashKit.DrawTextOnBitmap(bitmap,"Type: " + mineral.Type._name, Color.White, "Arial", 20, 30, 70);
             SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.White, "Arial", 20, 30, 90);
             SplashKit.DrawTextOnBitmap(bitmap, "Size: " + Math.Abs(mineral.Area), Color.White, "Arial", 20, 30, 110);
-            SplashKit.DrawBitmap(bitmap, 600, 400, SplashKit.OptionScaleBmp(1.5,1.5));
+            SplashKit.DrawBitmap(bitmap, 600, 200, SplashKit.OptionScaleBmp(1.5,1.5));
+        }
+        private string IDgenerator()
+        {
+            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
+
+                if (worksheet == null)
+                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
+
+                //use the newest id to add new mineral
+                int rows = worksheet.Dimension.Rows;
+                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+                if (rows > 1)
+                    idCellValue = (int.Parse(idCellValue)).ToString();
+                else
+                    idCellValue = "1";
+                return idCellValue;
+            }
         }
     }
 }

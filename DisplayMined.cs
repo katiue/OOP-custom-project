@@ -7,7 +7,7 @@ namespace OOP_custom_project
     public class DisplayMined
     {
         private Window window;
-        private Bitmap background = new Bitmap("background", @"D:\OOP-custom-project\forging_background.jpg");
+        private Bitmap background = new Bitmap("background", @"D:\OOP-custom-project\Image\forging_background.jpg");
         private Mineral mineral { get; set; }
         private GachaMineral gacha = new GachaMineral();
         private List<Mineral> minerals = new List<Mineral>();
@@ -55,7 +55,7 @@ namespace OOP_custom_project
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
 
             //draw upgrade button
-            Bitmap button = new Bitmap("Upgrade", @"D:\OOP-custom-project\Upgrade_button.png");
+            Bitmap button = new Bitmap("Upgrade", @"D:\OOP-custom-project\Image\Upgrade_button.png");
             SplashKit.DrawBitmap(button, 500,400, SplashKit.OptionScaleBmp(0.6,0.5));
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
@@ -112,7 +112,7 @@ namespace OOP_custom_project
             }
             for(int i = minerals.Count; i < 8; i++)
             {
-                Bitmap bmp= new Bitmap("Empty", @"D:\OOP-custom-project\empty_box.png");
+                Bitmap bmp= new Bitmap("Empty", @"D:\OOP-custom-project\Image\empty_box.png");
                 SplashKit.DrawBitmap(bmp, i * 50 - 50, 300, SplashKit.OptionScaleBmp(0.2,0.2));
             }
         }
