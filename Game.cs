@@ -10,12 +10,14 @@ namespace OOP_custom_project
     public class Game
     {
 
-        private string current_screen_type = "bag";
+        private string current_screen_type = "starting";
         public Bag bag;
         public Window window = new Window("Game screen", 1000, 700);
         public WeaponForging forging;
+        public MainScreen mainScreen;
         public Game() 
         {
+            mainScreen = new MainScreen(this);
             bag = new Bag(this);
             forging = new WeaponForging(this);
         }
@@ -31,6 +33,7 @@ namespace OOP_custom_project
                 switch (current_screen_type)
                 {
                     case "starting":
+                        mainScreen.Draw();
                         break;
                     case "molding":
                         GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);

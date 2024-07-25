@@ -6,7 +6,7 @@ using SplashKitSDK;
 
 namespace OOP_custom_project
 {
-    public class InteractiveMap
+    public class InteractiveMap : IAmAScreen
     {
         private float _zoom;
         private float _offsetX, _offsetY;
@@ -112,7 +112,6 @@ namespace OOP_custom_project
                             Mineral mineral = new Mineral(new string[] { id }, "", "", CollectMaterial(zone));
                             obtainedmineral.Add(mineral);
                             _game.bag.MineralBag.Inventory.Put(mineral);
-                            _game.ChangeScreen("bag");
                             notification = true;
                         }
                     }
@@ -123,7 +122,13 @@ namespace OOP_custom_project
                 //Draw animation layer
                 SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
 
-                if(notification)
+                if (SplashKit.KeyDown(KeyCode.EscapeKey))
+                {
+                    _game.ChangeScreen("starting");
+                    return;
+                }
+
+                if (notification)
                 {
                     if (SplashKit.MouseDown(MouseButton.LeftButton))
                     {

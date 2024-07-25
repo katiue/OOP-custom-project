@@ -7,7 +7,7 @@ using SplashKitSDK;
 
 namespace OOP_custom_project
 {
-    public class Bag
+    public class Bag : IAmAScreen
     {
         private MineralBag _mineralbag;
         private WeaponBag _componentbag;
@@ -44,22 +44,13 @@ namespace OOP_custom_project
         public void Draw()
         {
             SplashKit.FillRectangle(Color.RGBAColor(128, 128, 128, 64), 0, 0, 1000, 700);
-            switch(_displaying)
-            {
-                case "mineral":
-                    _mineralbag.Draw();
-                    break;
-                case "weapon":
-                    _componentbag.Draw(_game);
-                    break;
-            }
-            if(SplashKit.KeyDown(KeyCode.EscapeKey))
-            {
-                _game.ChangeScreen("map");
-            }
 
-            SplashKit.DrawRectangle(Color.Black, 30, 50, 50, 50);
-            SplashKit.DrawRectangle(Color.Black, 30, 120, 50, 50);
+            //draw selection bar
+            Bitmap mineral_icon = new Bitmap("mineral", @"D:\OOP-custom-project\Image\mineral_icon.png");
+            SplashKit.DrawBitmap(mineral_icon, -57, -36, SplashKit.OptionScaleBmp(0.22, 0.22));
+            Bitmap weapon_icon = new Bitmap("weapon", @"D:\OOP-custom-project\Image\sword_icon.png");
+            SplashKit.DrawBitmap(weapon_icon, -57, 33, SplashKit.OptionScaleBmp(0.22, 0.22));
+
             if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 50, 50, 50))
             {
                 _displaying = "mineral";
@@ -67,6 +58,19 @@ namespace OOP_custom_project
             if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 120, 50, 50))
             {
                 _displaying = "weapon";
+            }
+            switch(_displaying)
+            {
+                case "mineral":
+                    _mineralbag.Draw();
+                    break;
+                case "weapon":
+                    _componentbag.Draw();
+                    break;
+            }
+            if(SplashKit.KeyDown(KeyCode.EscapeKey))
+            {
+                _game.ChangeScreen("starting");
             }
         }
         public void SaveFile()

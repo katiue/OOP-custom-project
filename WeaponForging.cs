@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OOP_custom_project
 {
-    public class WeaponForging
+    public class WeaponForging : IAmAScreen
     {
         private Mineral? Beingforged1;
         private Mineral? Beingforged2;
@@ -19,6 +19,7 @@ namespace OOP_custom_project
         private string order;
         private Define define = new Define();
         private Bitmap Addbox = new Bitmap("Add box", @"D:\OOP-custom-project\Image\empty_box.png");
+        private float _offsetY;
         public WeaponForging(Game game)
         {
             _game = game;
@@ -45,10 +46,17 @@ namespace OOP_custom_project
                 Beingforged2.Draw(-88, -339, 0.1);
             }
 
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700))
+            // Handle input for panning
+            Vector2D pos = SplashKit.MouseMovement();
+            if (SplashKit.MouseDown(MouseButton.LeftButton))
+            {
+                _offsetY += (float)pos.Y;
+            }
+
+            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && pos.X == 0 && pos.Y == 0)
             {
                 int x = (int)(SplashKit.MouseX() - 400) / 100;
-                int y = (int)SplashKit.MouseY() / 100;
+                int y = (int)(SplashKit.MouseY() - _offsetY) / 100;
                 if (y * 5 + x - 1 < mineralBag.Inventory.Mineral.Count)
                 {
                     if (Beingforged1 == null)
@@ -98,10 +106,19 @@ namespace OOP_custom_project
                 }
             }
 
-            for (int j = 0; j < Math.Min(mineralBag.Inventory.Mineral.Count, 35); j++)
+            if (SplashKit.KeyDown(KeyCode.EscapeKey))
             {
-                mineralBag.Inventory.Mineral[j].Draw((j % 5) * 100 + 50, (j / 5) * 100 - 450, 0.07);
-                SplashKit.DrawText(mineralBag.Inventory.Mineral[j].Type._name, Color.Black, "Arial", 12, (j % 5) * 100 + 510, (j / 5) * 100 + 90);
+                _game.ChangeScreen("starting");
+                return;
+            }
+
+            for (int j = 0; j < mineralBag.Inventory.Mineral.Count; j++)
+            {
+                if((j / 5) * 100 - 450 + _offsetY > -500 && (j / 5) * 100 - 450 + _offsetY < 200)
+                {
+                    mineralBag.Inventory.Mineral[j].Draw((j % 5) * 100 + 50, (j / 5) * 100 - 450 + _offsetY, 0.07);
+                    SplashKit.DrawText(mineralBag.Inventory.Mineral[j].Type._name, Color.Black, "Arial", 12, (j % 5) * 100 + 510, (j / 5) * 100 + 90 + _offsetY);
+                }
             }
         }
         private Weapon ForgeWeapon(Mineral mineral1, Mineral mineral2)

@@ -7,11 +7,10 @@ using SplashKitSDK;
 
 namespace OOP_custom_project
 {
-    public class WeaponBag : Item, IHaveInventory
+    public class WeaponBag : Item, IHaveInventory, IAmAScreen
     {
-        private Weapon? showing;
         private WeaponInventory _inventory;
-        private WeaponForging? _forging;
+        private float _offsetY = 0;
         public WeaponBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
             _inventory = new WeaponInventory();
@@ -41,39 +40,21 @@ namespace OOP_custom_project
                 return _inventory;
             }
         }
-        public void Draw(Game game)
+        public void Draw()
         {
-            Window window = SplashKit.CurrentWindow();
-            if (SplashKit.KeyTyped(KeyCode.EscapeKey) || window.CloseRequested)
-            {
-                if (showing != null)
-                    _inventory.Put(showing);
-                showing = null;
-            }
-            if (showing != null)
-                ForgeComponent(showing, game);
             for (int i = 0; i < _inventory.ComponentList.Count; i++)
             {
-                if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 100 * (i % 8) + 164, 100 * (i / 8) + 64, 70, 70))
-                {
-                    showing = _inventory.Take(_inventory.ComponentList[i].ID[0]);
-                }
-                if (showing == null)
-                {
-                    _forging = null;
-                    if (_inventory.ComponentList[i] != null)
-                        _inventory.ComponentList[i].Draw((i % 8) * 100 + 210, (i / 8) * 100 + 110, 0.07);
-                    SplashKit.DrawText(_inventory.ComponentList[i].Name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140);
-                }
+                if (_inventory.ComponentList[i] != null)
+                    _inventory.ComponentList[i].Draw((i % 8) * 150 + 210, (i / 8) * 100 + 110 + _offsetY);
+                SplashKit.DrawText(_inventory.ComponentList[i].Name, Color.Black, "Arial", 12, (i % 8) * 150 + 165, (i / 8) * 100 + 145 + _offsetY);
             }
-        }
-        private void ForgeComponent(Weapon component, Game game)
-        {
-            if (_forging == null)
+
+            // Handle input for panning
+            Vector2D pos = SplashKit.MouseMovement();
+            if (SplashKit.MouseDown(MouseButton.LeftButton))
             {
-                _forging = new WeaponForging(game);
+                _offsetY += (float)pos.Y;
             }
-            _forging.Draw();
         }
     }
 }

@@ -57,9 +57,9 @@ namespace OOP_custom_project
             durability = (stiffness) * (forgedTimes + 1);
         }
 
-        public void Draw(float x, float y, double scale)
+        public void Draw(float x, float y)
         {
-            SplashKit.DrawBitmap(bitmap, x - 35, y - 35, SplashKit.OptionScaleBmp(70 / bitmap.Width, 70 / bitmap.Width));
+            SplashKit.DrawBitmap(bitmap, x - (bitmap.Width/2), y - (bitmap.Height/2), SplashKit.OptionScaleBmp((double)70/ (double)bitmap.Width, (double)70/ (double)bitmap.Height));
         }
         private Bitmap LoadBitmap(string mineral1, string mineral2)
         {
