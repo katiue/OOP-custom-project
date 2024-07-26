@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Net.Http.Headers;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using SplashKitSDK;
 
 namespace OOP_custom_project
@@ -109,7 +106,7 @@ namespace OOP_custom_project
                             int temp = int.Parse(id);
                             temp++;
                             id = temp.ToString();
-                            Mineral mineral = new Mineral(new string[] { id }, "", "", CollectMaterial(zone));
+                            Mineral mineral = new Mineral(new string[] { id }, "", "", CollectMaterial(zone), new List<Point2D>());
                             obtainedmineral.Add(mineral);
                             _game.bag.MineralBag.Inventory.Put(mineral);
                             notification = true;

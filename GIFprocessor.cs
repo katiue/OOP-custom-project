@@ -1,6 +1,4 @@
 ﻿using SplashKitSDK;
-using System;
-using System.Diagnostics.Metrics;
 
 namespace OOP_custom_project
 {
@@ -60,9 +58,9 @@ namespace OOP_custom_project
         }
         public void ShowGifFrames(Window window)
         {
-            while(_currentFrame < _frames.Length-1)
+            while(_currentFrame < _frames.Length )
             {
-                if (window.CloseRequested)
+                if (window.CloseRequested || _currentFrame == _frames.Length - 1)
                     break;
                 SplashKit.ProcessEvents();
                 SplashKit.ClearScreen();

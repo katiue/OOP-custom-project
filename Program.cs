@@ -1,6 +1,3 @@
-using System;
-using SplashKitSDK;
-
 namespace OOP_custom_project
 {
     public class Program

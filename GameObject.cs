@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OOP_custom_project
+﻿namespace OOP_custom_project
 {
     public class GameObject : IdentifiableObject
     {
         private string[] _ids;
         private string _name;
         private string _description;
-
         public GameObject(string[] ids,string name , string desc) : base(ids)
         {
             _ids = ids;

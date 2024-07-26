@@ -1,9 +1,4 @@
 ﻿using SplashKitSDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OOP_custom_project
 {
@@ -23,7 +18,6 @@ namespace OOP_custom_project
         }
         public void Run()
         {
-            GIFprocessor GifFile;
             InteractiveMap map = new InteractiveMap(window, this);
             do
             {
@@ -34,10 +28,6 @@ namespace OOP_custom_project
                 {
                     case "starting":
                         mainScreen.Draw();
-                        break;
-                    case "molding":
-                        GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
-                        GifFile.ShowGifFrames(window);
                         break;
                     case "map":
                         map.Draw();

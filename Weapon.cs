@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SplashKitSDK;
+﻿using SplashKitSDK;
 
 namespace OOP_custom_project
 {

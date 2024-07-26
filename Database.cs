@@ -1,8 +1,5 @@
 ﻿using OfficeOpenXml;
 using SplashKitSDK;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace OOP_custom_project
 {
@@ -37,7 +34,6 @@ namespace OOP_custom_project
                 worksheet.Cells[1, 7].Value = "Max Quantity";
                 worksheet.Cells[1, 8].Value = "Color";
                 worksheet.Cells[1, 9].Value = "Points";
-                worksheet.Cells[1, 10].Value = "Showed Points";
 
                 // Adding mineral data
                 for (int i = 0; i < sortedMinerals.Count; i++)
@@ -52,7 +48,6 @@ namespace OOP_custom_project
                     worksheet.Cells[i + 2, 7].Value = mineral.Type._maxquantity;
                     worksheet.Cells[i + 2, 8].Value = ColorToString(mineral.Type._color);
                     worksheet.Cells[i + 2, 9].Value = PointsToString(mineral.points);
-                    worksheet.Cells[i + 2, 10].Value = PointsToString(mineral.showedPoints);
                 }
 
                 // Saving the file
@@ -84,24 +79,18 @@ namespace OOP_custom_project
                     string? maxQuantityCellValue = worksheet.Cells[row, 7].Value?.ToString();
                     string? colorString = worksheet.Cells[row, 8].Value?.ToString();
                     string? pointsString = worksheet.Cells[row, 9].Value?.ToString();
-                    string? showedPointsString = worksheet.Cells[row, 10].Value?.ToString();
 
-                    if (idCellValue != null && name != null && description != null && typeName != null && typeDescription != null && stiffnessCellValue != null && maxQuantityCellValue != null && colorString != null && pointsString != null && showedPointsString != null)
+                    if (idCellValue != null && name != null && description != null && typeName != null && typeDescription != null && stiffnessCellValue != null && maxQuantityCellValue != null && colorString != null && pointsString != null)
                     {
                         string[] ids = idCellValue.Split(',');
                         int stiffness = int.Parse(stiffnessCellValue);
                         int maxQuantity = int.Parse(maxQuantityCellValue);
                         Color color = ParseColor(colorString);
                         List<Point2D> points = StringToPoints(pointsString);
-                        List<Point2D> showedPoints = StringToPoints(showedPointsString);
 
                         MineralType type = new MineralType(typeName, typeDescription, stiffness, maxQuantity, color);
 
-                        Mineral mineral = new Mineral(ids, name, description, type)
-                        {
-                            points = points,
-                            showedPoints = showedPoints
-                        };
+                        Mineral mineral = new Mineral(ids, name, description, type, points);
 
                         minerals.Add(mineral);
                     }
@@ -194,7 +183,6 @@ namespace OOP_custom_project
             }
             return components;
         }
-
         private static Color ParseColor(string colorString)
         {
             string[] rgba = colorString.Replace("Color [", "").Replace("]", "").Split(',');

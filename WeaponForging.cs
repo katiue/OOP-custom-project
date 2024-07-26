@@ -1,11 +1,6 @@
 ﻿using OfficeOpenXml;
 using SplashKitSDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO.Compression;
 
 namespace OOP_custom_project
 {
@@ -20,6 +15,7 @@ namespace OOP_custom_project
         private Define define = new Define();
         private Bitmap Addbox = new Bitmap("Add box", @"D:\OOP-custom-project\Image\empty_box.png");
         private float _offsetY;
+        private int count;
         public WeaponForging(Game game)
         {
             _game = game;
@@ -38,12 +34,12 @@ namespace OOP_custom_project
             //draw item on boxes
             if( Beingforged1 != null)
             {
-                Beingforged1.Draw(-388, -339, 0.1);
+                Beingforged1.Draw(-288, -239, 0.15);
             }
 
             if (Beingforged2 != null)
             {
-                Beingforged2.Draw(-88, -339, 0.1);
+                Beingforged2.Draw(17, -239, 0.15);
             }
 
             // Handle input for panning
@@ -88,6 +84,17 @@ namespace OOP_custom_project
                     Bitmap bitmap = DrawObtained();
                     SplashKit.DrawBitmap(bitmap, 100, 300);
                 }
+                else
+                {
+                    if (plan1 != null)
+                    {
+                        plan1.Draw(250, 250);
+                    }
+                    else if (plan2 != null)
+                    {
+                        plan2.Draw(250, 250);
+                    }
+                }
 
                 if(SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 0, 510, 500, 150))
                 {
@@ -96,12 +103,16 @@ namespace OOP_custom_project
                         componentBag.Inventory.Put(ForgeWeapon(Beingforged1, Beingforged2));
                         Beingforged1 = null;
                         Beingforged2 = null;
+                        GIFprocessor GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
+                        GifFile.ShowGifFrames(_game.window);
                     }
                     else if (plan2 != null)
                     {
                         componentBag.Inventory.Put(ForgeWeapon(Beingforged2, Beingforged1));
                         Beingforged1 = null;
                         Beingforged2 = null;
+                        GIFprocessor GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
+                        GifFile.ShowGifFrames(_game.window);
                     }
                 }
             }
@@ -112,12 +123,17 @@ namespace OOP_custom_project
                 return;
             }
 
+            count = -1;
             for (int j = 0; j < mineralBag.Inventory.Mineral.Count; j++)
             {
-                if((j / 5) * 100 - 450 + _offsetY > -500 && (j / 5) * 100 - 450 + _offsetY < 200)
+                if(mineralBag.Inventory.Mineral[j].Area >= 20000)
                 {
-                    mineralBag.Inventory.Mineral[j].Draw((j % 5) * 100 + 50, (j / 5) * 100 - 450 + _offsetY, 0.07);
-                    SplashKit.DrawText(mineralBag.Inventory.Mineral[j].Type._name, Color.Black, "Arial", 12, (j % 5) * 100 + 510, (j / 5) * 100 + 90 + _offsetY);
+                    count++;
+                    if ((count / 5) * 100 - 450 + _offsetY > -500 && (count / 5) * 100 - 450 + _offsetY < 200)
+                    {
+                        mineralBag.Inventory.Mineral[count].Draw((count % 5) * 100 + 150, (count / 5) * 100 - 350 + _offsetY, 0.1);
+                        SplashKit.DrawText(mineralBag.Inventory.Mineral[count].Type._name, Color.Black, "Arial", 12, (count % 5) * 100 + 510, (count / 5) * 100 + 90 + _offsetY);
+                    }
                 }
             }
         }
@@ -156,9 +172,8 @@ namespace OOP_custom_project
             Bitmap baseimg = new Bitmap("bitmap", obtained.Width, obtained.Height + 20);
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
-            SplashKit.DrawTextOnBitmap(baseimg, "Craft failed", Color.Black, "Arial", 0, 70, 30);
-            SplashKit.DrawTextOnBitmap(baseimg, "Try another combination", Color.Black, "Arial", 0, 40, 40);
-            SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.Black, "Arial", 40, 40, baseimg.Height - 20);
+            SplashKit.DrawTextOnBitmap(baseimg, "Craft failed", Color.Black, "Arial", 0, 80, 60);
+            SplashKit.DrawTextOnBitmap(baseimg, "Try another combination", Color.Black, "Arial", 0, 50, 70);
             return baseimg;
         }
     }

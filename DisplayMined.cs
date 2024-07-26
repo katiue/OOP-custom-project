@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using SplashKitSDK;
+﻿using SplashKitSDK;
 
 namespace OOP_custom_project
 {
@@ -13,6 +11,7 @@ namespace OOP_custom_project
         private List<Mineral> minerals = new List<Mineral>();
         private bool showbag = false;
         private double total = 0;
+        private float _offsetY;
         public DisplayMined(Window window, Mineral mineral)
         {
             this.window = window;
@@ -21,24 +20,32 @@ namespace OOP_custom_project
         public void Drawing(MineralInventory _inventory)
         {
 
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 640, 470, 320, 160) && !showbag && total > 30000)
+            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 640, 470, 320, 160) && !showbag && total >= 10000)
             {
                 Point2D pt = new Point2D();
                 pt.X = gacha.Pull();
                 pt.Y = gacha.Pull();
-                mineral.showedPoints.Add(pt);
-                foreach(var m in minerals)
+                mineral.points.Add(pt);
+                foreach (var m in minerals)
                 {
                     _inventory.Take(m.ID[0]);
                 }
                 minerals.Clear();
             }
 
+            // Handle input for panning
+            Vector2D pos = SplashKit.MouseMovement();
+            if (SplashKit.MouseDown(MouseButton.LeftButton))
+            {
+                _offsetY += (float)pos.Y;
+            }
+
             double scaleX = (double)window.Width / (double)background.Width;
             double scaleY = (double)window.Height / (double)background.Height;
             SplashKit.DrawBitmap(background, -652, -545, SplashKit.OptionScaleBmp(scaleX, scaleY));
 
-            mineral.Draw(300, -300, 0.3);
+            mineral.Draw(400, -200, 0.3);
+
             Bitmap bitmap = new Bitmap("Detail", 300, 200);
             bitmap.Clear(Color.Wheat);
 
@@ -51,7 +58,7 @@ namespace OOP_custom_project
             {
                 total += m.Area;
             }
-            SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/30000", Color.Black, "Arial", 12, 10, 80);
+            SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/10000", Color.Black, "Arial", 12, 10, 80);
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
 
             //draw upgrade button
@@ -60,23 +67,25 @@ namespace OOP_custom_project
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
             {
-                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag && total < 30000)
+                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag && total < 10000 && pos.X == 0 && pos.Y == 0)
                 {
                     int x = (int)(SplashKit.MouseX() - 400) / 100;
-                    int y = (int)SplashKit.MouseY() / 100;
+                    int y = (int)(SplashKit.MouseY() - _offsetY) / 100;
                     if(y * 5 + x - 1 < _inventory.Mineral.Count)
                     {
                         foreach(var m in minerals)
                         {
                             if (m.ID[0] == _inventory.Mineral[y * 5 + x - 1].ID[0])
                             {
-                                x = 99;
-                                y = 99;
+                                x = 9999;
+                                y = 9999;
                                 break;
                             }
                         }
                         if (y * 5 + x - 1 < _inventory.Mineral.Count)
+                        {
                             minerals.Add(_inventory.Mineral[y * 5 + x - 1]);
+                        }
                     }
                 }
                 else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 40, 390, 400, 44))
@@ -88,7 +97,7 @@ namespace OOP_custom_project
                     }
                     showbag = true;
                 }
-                else
+                else if(!SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700))
                 {
                     showbag = false;
                 }
@@ -98,7 +107,8 @@ namespace OOP_custom_project
                 SplashKit.FillRectangle(Color.BlanchedAlmond, 500, 0, 500, 700);
                 for (int j = 0; j < _inventory.Mineral.Count; j++)
                 {
-                    _inventory.Mineral[j].Draw((j % 5) * 100 + 50, (j / 5) * 100 - 450, 0.07);
+                    if((j / 5) * 100 - 350 + _offsetY> -500 && (j / 5) * 100 - 350 + _offsetY < 300)
+                    _inventory.Mineral[j].Draw((j % 5) * 100 + 150, (j / 5) * 100 - 350 + _offsetY, 0.1);
                 }
             }
             DrawMineral();
@@ -108,7 +118,7 @@ namespace OOP_custom_project
         {
             for(int i = 0; i < minerals.Count; i++)
             {
-                minerals[i].Draw(i*50 - 437, -89, 0.045);
+                minerals[i].Draw(i*50 - 337, 10, 0.06);
             }
             for(int i = minerals.Count; i < 8; i++)
             {
