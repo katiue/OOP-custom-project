@@ -8,12 +8,12 @@ namespace OOP_custom_project
         private int _currentFrame;
         private readonly double _frameDuration; // Duration for each frame in seconds
         private readonly Bitmap[] _frames;
-        public GIFprocessor(string baseName, int frameCount, double frameDuration)
+        public GIFprocessor(string FolderPath, int frameCount, double frameDuration)
         {
             _frameDuration = frameDuration;
             _currentFrame = 0;
             _lastFrameTime = DateTime.Now;
-            _frames = LoadGifFrames(baseName, frameCount, frameDuration);
+            _frames = LoadGifFrames(FolderPath, frameCount, frameDuration);
         }
         private static Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
         {

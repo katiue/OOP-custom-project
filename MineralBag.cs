@@ -4,10 +4,10 @@ namespace OOP_custom_project
 {
     public class MineralBag : Item, IHaveInventory, IAmAScreen
     {
-        private Mineral? showing;
         private MineralInventory _inventory;
-        private DisplayMined? _display;
         private double _offsetY;
+        private DisplayMined? _display;
+        public Mineral? showing;
         public MineralBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
             _inventory = new MineralInventory();
@@ -37,7 +37,7 @@ namespace OOP_custom_project
                 return _inventory;
             }
         }
-        public void Draw()
+        public override void Draw()
         {
             Window window = SplashKit.CurrentWindow();
             if (SplashKit.KeyTyped(KeyCode.EscapeKey))

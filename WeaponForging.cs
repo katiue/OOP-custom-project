@@ -1,6 +1,5 @@
 ﻿using OfficeOpenXml;
 using SplashKitSDK;
-using System.IO.Compression;
 
 namespace OOP_custom_project
 {
@@ -20,7 +19,7 @@ namespace OOP_custom_project
         {
             _game = game;
             mineralBag = game.bag.MineralBag;
-            componentBag = game.bag.ComponentBag;
+            componentBag = game.bag.WeaponBag;
             order = IDgenerator();
         }
         public void Draw()

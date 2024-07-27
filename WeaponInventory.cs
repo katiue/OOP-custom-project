@@ -46,7 +46,7 @@
             }
             return null;
         }
-        public List<Weapon> ComponentList
+        public List<Weapon> WeaponList
         {
             get
             {

@@ -5,7 +5,7 @@ namespace OOP_custom_project
     public class Bag : IAmAScreen
     {
         private MineralBag _mineralbag;
-        private WeaponBag _componentbag;
+        private WeaponBag _weaponbag;
         private Database _database;
         private Game _game;
         private string _displaying = "mineral";
@@ -13,14 +13,14 @@ namespace OOP_custom_project
         {
             _database = new Database();
             _mineralbag = new MineralBag(new string[] { "Mineral bag" }, "Mineral bag", "Bag to store mineral");
-            _componentbag = new WeaponBag(new string[] { "Component bag" }, "Component bag", "Bag to store component");
+            _weaponbag = new WeaponBag(new string[] { "Component bag" }, "Component bag", "Bag to store component");
             AddMineral();
             _game = game;
         }
         private void AddMineral()
         {
             _mineralbag.Inventory.Put(_database.ImportMineralsFromExcel(@"D:\OOP-custom-project\Mineral.xlsx"));
-            _componentbag.Inventory.Put(_database.ImportComponentsFromExcel(@"D:\OOP-custom-project\Weapon.xlsx"));
+            _weaponbag.Inventory.Put(_database.ImportComponentsFromExcel(@"D:\OOP-custom-project\Weapon.xlsx"));
         }
         public MineralBag MineralBag
         {
@@ -29,11 +29,11 @@ namespace OOP_custom_project
                 return _mineralbag;
             }
         }
-        public WeaponBag ComponentBag
+        public WeaponBag WeaponBag
         {
             get
             {
-                return _componentbag;
+                return _weaponbag;
             }
         }
         public void Draw()
@@ -60,7 +60,7 @@ namespace OOP_custom_project
                     _mineralbag.Draw();
                     break;
                 case "weapon":
-                    _componentbag.Draw();
+                    _weaponbag.Draw();
                     break;
             }
             if(SplashKit.KeyDown(KeyCode.EscapeKey))
@@ -71,7 +71,7 @@ namespace OOP_custom_project
         public void SaveFile()
         {
             _database.ExportMineralsToExcel(_mineralbag.Inventory.Mineral, @"D:\OOP-custom-project\Mineral.xlsx");
-            _database.ExportComponentsToExcel(_componentbag.Inventory.ComponentList, @"D:\OOP-custom-project\Weapon.xlsx");
+            _database.ExportComponentsToExcel(_weaponbag.Inventory.WeaponList, @"D:\OOP-custom-project\Weapon.xlsx");
         }
     }
 }

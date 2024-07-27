@@ -6,8 +6,8 @@ namespace OOP_custom_project
     public class MainScreen : IAmAScreen
     {
         private Game _game;
-        private bool tutorial = true;
-        private int scriptcount = 8;
+        private bool tutorial = false;
+        private int scriptcount = 0;
         private string[] script = new string[]
         {
             "Hephaestus: Welcome to the world of forging, young adventurer!",
@@ -21,7 +21,7 @@ namespace OOP_custom_project
             "Hephaestus: Here's where you see your quest about what you need to do.",
             "Hephaestus: Don't be afraid to make mistakes. Each failure is a step towards mastery.",
             "Hephaestus: Now, go forth and unleash your inner blacksmith! The world awaits your creations.",
-            "Hephaestus: Good luck on your journet."
+            "Hephaestus: Good luck on your journey."
         };
         public MainScreen(Game game) 
         {
@@ -29,7 +29,14 @@ namespace OOP_custom_project
         }
         public void Draw()
         {
-            DrawSelectionBar();
+            //draw main theme and icons
+            SplashKit.DrawBitmap(new Bitmap("background", @"D:\OOP-custom-project\Image\Main-theme-background.png"), 0, 0);
+            SplashKit.DrawBitmap(new Bitmap("map", @"D:\OOP-custom-project\Image\Game_map_icon.png"), 0, -45, SplashKit.OptionScaleBmp(0.5, 0.5));
+            SplashKit.DrawBitmap(new Bitmap("bag", @"D:\OOP-custom-project\Image\bag_icon.png"), 100, -63, SplashKit.OptionScaleBmp(0.5, 0.5));
+            SplashKit.DrawBitmap(new Bitmap("forging", @"D:\OOP-custom-project\Image\Forging_icon.webp"), 70, -200, SplashKit.OptionScaleBmp(0.2, 0.2));
+            SplashKit.DrawBitmap(new Bitmap("quest", @"D:\OOP-custom-project\Image\Quest-icon.png"), 200, -195, SplashKit.OptionScaleBmp(0.22, 0.22));
+
+            //draw Hephaestus and dialog
             if (tutorial)
             {
                 Bitmap Hephaestus = new Bitmap("Hepatheus", @"D:\OOP-custom-project\Image\Hephaestus.png");
@@ -69,40 +76,34 @@ namespace OOP_custom_project
                     {
                         _game.ChangeScreen("map");
                     }
-                    else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 170, 10, 100, 100))
+                    if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 160, 10, 100, 100))
                     {
                         _game.ChangeScreen("bag");
                     }
-                    else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 200, 10, 100, 100))
+                    if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 280, 10, 100, 100))
                     {
                         _game.ChangeScreen("forging");
+                    }
+                    if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 400, 10, 100, 100))
+                    {
+                        _game.ChangeScreen("quest");
                     }
                 }
             }
         }
-        private void DrawSelectionBar() 
-        {
-            Bitmap selecticon = new Bitmap("map", @"D:\OOP-custom-project\Image\Game_map_icon.png");
-            SplashKit.DrawBitmap(selecticon, 0, -45, SplashKit.OptionScaleBmp(0.5,0.5));
-
-            selecticon = new Bitmap("bag", @"D:\OOP-custom-project\Image\bag_icon.png");
-            SplashKit.DrawBitmap(selecticon, 100, -63, SplashKit.OptionScaleBmp(0.5, 0.5));
-
-            selecticon = new Bitmap("forging", @"D:\OOP-custom-project\Image\Forging_icon.webp");
-            SplashKit.DrawBitmap(selecticon, 70, -200, SplashKit.OptionScaleBmp(0.2, 0.2));
-
-            selecticon = new Bitmap("quest", @"D:\OOP-custom-project\Image\Quest-icon.png");
-            SplashKit.DrawBitmap(selecticon, 200, -195, SplashKit.OptionScaleBmp(0.22, 0.22));
-        }
         private void DrawDialog(int count)
         {
-            Bitmap bitmap = new Bitmap("dialog", 500, 150);
+            Bitmap bitmap = new Bitmap("dialog", 700, 150);
             bitmap.Clear(Color.RGBAColor(128, 128, 128, 100));
 
-            SplashKit.DrawTextOnBitmap(bitmap, script[count], Color.Black, "Arial", 20, 10, 10);
-            SplashKit.DrawTextOnBitmap(bitmap, "Hephaestus: Click anywhere to continue", Color.Black, "Arial", 20, 50, 120);
+            string[] eachtext = script[count].Split('.', '!');
+            for (int i = 0; i < eachtext.Length; i++)
+            {
+                SplashKit.DrawTextOnBitmap(bitmap, eachtext[i], Color.Black, "Arial", 50, 50, 10 + 10*i);
+            }
+            SplashKit.DrawTextOnBitmap(bitmap, "Click anywhere to continue", Color.Black, "Arial", 50, 200, 120);
 
-            SplashKit.DrawBitmap(bitmap, 250, 520, SplashKit.OptionScaleBmp(2,1.5));
+            SplashKit.DrawBitmap(bitmap, 150, 520, SplashKit.OptionScaleBmp(1.5,1.5));
             bitmap.Dispose();
         }
     }

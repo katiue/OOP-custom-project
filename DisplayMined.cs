@@ -5,7 +5,7 @@ namespace OOP_custom_project
     public class DisplayMined
     {
         private Window window;
-        private Bitmap background = new Bitmap("background", @"D:\OOP-custom-project\Image\forging_background.jpg");
+        private Bitmap background = new Bitmap("upgarding background", @"D:\OOP-custom-project\Image\forging_background.jpg");
         private Mineral mineral { get; set; }
         private GachaMineral gacha = new GachaMineral();
         private List<Mineral> minerals = new List<Mineral>();
@@ -19,20 +19,6 @@ namespace OOP_custom_project
         }
         public void Drawing(MineralInventory _inventory)
         {
-
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 640, 470, 320, 160) && !showbag && total >= 10000)
-            {
-                Point2D pt = new Point2D();
-                pt.X = gacha.Pull();
-                pt.Y = gacha.Pull();
-                mineral.points.Add(pt);
-                foreach (var m in minerals)
-                {
-                    _inventory.Take(m.ID[0]);
-                }
-                minerals.Clear();
-            }
-
             // Handle input for panning
             Vector2D pos = SplashKit.MouseMovement();
             if (SplashKit.MouseDown(MouseButton.LeftButton))
@@ -53,11 +39,13 @@ namespace OOP_custom_project
             SplashKit.DrawTextOnBitmap(bitmap, "Type: " + mineral.Type._name, Color.Black, "Arial", 12, 10, 30);
             SplashKit.DrawTextOnBitmap(bitmap, "Area: " + mineral.Area, Color.Black, "Arial", 12, 10, 40);
             SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.Black, "Arial", 12, 10, 50);
+
             total = 0;
             foreach(var m in minerals)
             {
                 total += m.Area;
             }
+            
             SplashKit.DrawTextOnBitmap(bitmap, "Upgrade: " + total + "/10000", Color.Black, "Arial", 12, 10, 80);
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
 
@@ -67,7 +55,26 @@ namespace OOP_custom_project
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
             {
-                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag && total < 10000 && pos.X == 0 && pos.Y == 0)
+                //Upgrade mineral when 10000 value is met
+                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 640, 470, 320, 160) && !showbag && total >= 10000)
+                {
+                    for(int i = 0; i < total /10000; i++)
+                    {
+                        Point2D pt = new Point2D();
+                        pt.X = gacha.Pull();
+                        pt.Y = gacha.Pull();
+                        mineral.points.Add(pt);
+                    }
+                    foreach (var m in minerals)
+                    {
+                        _inventory.Take(m.ID[0]);
+                    }
+                    minerals.Clear();
+                    GIFprocessor gif = new GIFprocessor(@"D:\OOP-custom-project\Smashing_hammer\", 19, 0.03);
+                    gif.ShowGifFrames(window);
+                }
+                //click to add the into mineral bar
+                else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700) && minerals.Count < 8 && showbag && total < 10000 && pos.X == 0 && pos.Y == 0)
                 {
                     int x = (int)(SplashKit.MouseX() - 400) / 100;
                     int y = (int)(SplashKit.MouseY() - _offsetY) / 100;
@@ -88,6 +95,7 @@ namespace OOP_custom_project
                         }
                     }
                 }
+                //click on the add mineral bar
                 else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 40, 390, 400, 44))
                 {
                     int checkitm = (int)(SplashKit.MouseX() - 40)/44;
@@ -97,6 +105,7 @@ namespace OOP_custom_project
                     }
                     showbag = true;
                 }
+                //close bag
                 else if(!SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 500, 0, 500, 700))
                 {
                     showbag = false;

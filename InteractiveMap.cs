@@ -10,8 +10,8 @@ namespace OOP_custom_project
         private bool notification = false;
         private Bitmap _mapImage;
         private Bitmap? AddingObject;
+        private Bitmap? examine;
         private Bitmap[] tools;
-        private Window window;
         private Game _game;
         private List<MapObject> _zones;
         private List<Mineral> obtainedmineral;
@@ -35,7 +35,6 @@ namespace OOP_custom_project
                 new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(300, 300))
                 // Add more zones as needed
             };
-            this.window = window;
 
             tools = [
                 new Bitmap("PikachuMiner", @"D:\OOP-custom-project\pikachu_mining\frame_0_delay-0.1s.png"),
@@ -59,7 +58,7 @@ namespace OOP_custom_project
                 SplashKit.DrawBitmapOnBitmap(_mapImage, new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
 
-                if (window.CloseRequested)
+                if (_game.window.CloseRequested)
                     break;
 
                 // Calculate time elapsed and update the frame
@@ -96,7 +95,7 @@ namespace OOP_custom_project
                     double posY = midY + _offsetY - ((midY - addY) * _zoom);
 
                     // Check for mouse clicks
-                    if (SplashKit.MouseClicked(MouseButton.RightButton))
+                    if (SplashKit.MouseClicked(MouseButton.RightButton) && obtainedmineral.Count == 0)
                     {
                         float mouseX = SplashKit.MouseX();
                         float mouseY = SplashKit.MouseY();
@@ -114,7 +113,7 @@ namespace OOP_custom_project
                     }
 
                     //Run objects animation
-                    ShowObjectGifFrames(window, zone, _currentFrame, baseImage);
+                    ShowObjectGifFrames(_game.window, zone, _currentFrame, baseImage);
                 }
                 //Draw animation layer
                 SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
@@ -125,17 +124,22 @@ namespace OOP_custom_project
                     return;
                 }
 
+                if (SplashKit.MouseDown(MouseButton.LeftButton))
+                {
+                    examine = null;
+                    notification = false;
+                    obtainedmineral.Clear();
+                }
                 if (notification)
                 {
-                    if (SplashKit.MouseDown(MouseButton.LeftButton))
-                    {
-                        notification = false;
-                        obtainedmineral.Clear();
-                    }
                     SplashKit.DrawBitmap(DrawObtained(), 400, 200, SplashKit.OptionScaleBmp(2,2));
                 }
                 baseImage.Free();
 
+                if(examine !=null)
+                {
+                    SplashKit.DrawBitmap(examine, 400, 200, SplashKit.OptionScaleBmp(2, 2));
+                }
                 if(AddingObject != null)
                 {
                     // Each tool box is 100x100 pixels
@@ -183,12 +187,10 @@ namespace OOP_custom_project
                             _zones.Add(addedobj);
                             break;
                         case "BombMining":
-                            addedobj = new MapObject(@"D:\OOP-custom-project\Bomb_miner_removeBG\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
-                            _zones.Add(addedobj);
+                            DisplayBomb(addX - 100, addY - 100);
                             break;
                         case "Examine":
-                            addedobj = new MapObject(@"D:\OOP-custom-project\Bomb_miner\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
-                            _zones.Add(addedobj);
+                            examine = Displayexamine(addX - 100, addY - 100);
                             break;
                     }
                     AddingObject = null;
@@ -244,7 +246,7 @@ namespace OOP_custom_project
         }
         private void DrawToolBox()
         {
-            SplashKit.FillRectangle(Color.White, 0, 0, 100, 320);
+            SplashKit.FillRectangle(Color.White, 0, 0, 100, 400);
 
             for (int i = 0; i < tools.Length; i++)
             {
@@ -254,7 +256,7 @@ namespace OOP_custom_project
 
                 //calculate picture position
                 int posX = ((100 - tools[i].Width) / 2);
-                int posY = ((100 - tools[i].Height) / 2) + i * 80;
+                int posY = ((100 - tools[i].Height) / 2) + i * 100;
                 SplashKit.DrawBitmap(tools[i], posX, posY, SplashKit.OptionScaleBmp(scaleX, scaleY));
             }
         }
@@ -265,7 +267,7 @@ namespace OOP_custom_project
 
             if (SplashKit.PointInRectangle(mouseX, mouseY, 0, 0, 100, 400))
             {
-                AddingObject = tools[(int)(mouseY / 100)];
+                AddingObject = tools[(int)(mouseY) / 100];
             }
             else if(AddingObject != null)
             {
@@ -282,8 +284,15 @@ namespace OOP_custom_project
             SplashKit.DrawTextOnBitmap(baseimg, "Obtained", Color.WhiteSmoke, "Arial", 0, 110, 30);
             if(obtainedmineral.Count == 1)
             {
-                obtainedmineral[0].Draw(0,-200,0.1);
+                obtainedmineral[0].Draw(50,-100,0.15);
                 showdetails(obtainedmineral[0]);
+            }
+            else
+            {
+                for(int i = 0; i < obtainedmineral.Count; i++)
+                {
+                    obtainedmineral[i].Draw(-20 + i * 80, -100, 0.15);
+                }
             }
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height -  20);
             return baseimg;
@@ -318,6 +327,92 @@ namespace OOP_custom_project
                     idCellValue = "1";
                 return idCellValue;
             }
+        }
+        private void DisplayBomb(double x, double y)
+        {
+            notification = true;
+            for (int i = 0; i< 5; i++)
+            {
+                Mineral mineral = new Mineral([id], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), new List<Point2D>());
+                obtainedmineral.Add(mineral);
+                _game.bag.MineralBag.Inventory.Put(mineral);
+            }
+            int _currentFrame = 0;
+            DateTime _lastFrameTime = DateTime.Now;
+            double _frameDuration = 0.04;
+            while(_currentFrame < 49)
+            {
+                SplashKit.ProcessEvents();
+                SplashKit.ClearScreen();
+
+
+                Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\Image\background.png");
+                SplashKit.DrawBitmap(mapImage, _offsetX - 120, _offsetY - 120, SplashKit.OptionScaleBmp(2.2, 1.5));
+                SplashKit.DrawBitmapOnBitmap(_mapImage, new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
+                SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
+
+                if (_game.window.CloseRequested)
+                    break;
+
+                Bitmap bomb = new Bitmap("bomb", 500, 100);
+                bomb.Clear(Color.Black);
+                MapObject obj = new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = 250, Y = 50, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100));
+
+                // Calculate time elapsed and update the frame
+                DateTime now = DateTime.Now;
+                double elapsedSeconds = (now - _lastFrameTime).TotalSeconds;
+
+                if (elapsedSeconds >= _frameDuration)
+                {
+                    _currentFrame++;
+                    _lastFrameTime = now;
+                }
+                ShowObjectGifFrames(_game.window, obj, _currentFrame, bomb);
+                SplashKit.DrawBitmap(bomb, 250, 300, SplashKit.OptionScaleBmp(2, 2));
+                bomb.Free();
+                SplashKit.RefreshScreen(120);
+            }
+        }
+        private Bitmap Displayexamine(double x, double y)
+        {
+            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
+            Bitmap baseimg = new Bitmap("examine", obtained.Width, obtained.Height + 20);
+            baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
+            SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
+            SplashKit.DrawTextOnBitmap(baseimg, "This place you can mine", Color.WhiteSmoke, "Arial", 0, 50, 30);
+            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x, y)._name, Color.WhiteSmoke, "Arial", 0, 30, 60);
+            string[] description = SplitParagraph(definezone.AssignMineral(x, y)._description, 22);
+            for (int i = 0; i < description.Count(); i++)
+                SplashKit.DrawTextOnBitmap(baseimg, description[i], Color.WhiteSmoke, "Arial", 0, 30, 80 + i * 10);
+            SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height - 20);
+            return baseimg;
+        }
+        public string[] SplitParagraph(string paragraph, int maxLength)
+        {
+            string[] words = paragraph.Split(' ');
+            int maxLines = (int)Math.Ceiling((double)paragraph.Length / maxLength);
+            string[] lines = new string[maxLines];
+
+            string currentLine = "";
+            int lineIndex = 0;
+
+            foreach (string word in words)
+            {
+                if (currentLine.Length + word.Length + 1 <= maxLength)
+                {
+                    currentLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                }
+                else
+                {
+                    lines[lineIndex++] = currentLine;
+                    currentLine = word;
+                }
+            }
+
+            // Resize the array to remove unused elements
+            Array.Resize(ref lines, lineIndex);
+
+            return lines;
         }
     }
 }

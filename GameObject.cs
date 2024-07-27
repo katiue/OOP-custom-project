@@ -1,4 +1,5 @@
-﻿namespace OOP_custom_project
+﻿using SplashKitSDK;
+namespace OOP_custom_project
 {
     public class GameObject : IdentifiableObject
     {
@@ -38,6 +39,18 @@
             {
                 return _description;
             }
+        }
+        public virtual void Draw()
+        {
+            SplashKit.DrawText(ShortDescription, Color.Black, 0, 0);
+        }
+        public virtual void Draw(double x,double y)
+        {
+            SplashKit.DrawText(ShortDescription, Color.Black, 0, 0);
+        }
+        public virtual void Draw(double x, double y, double scale)
+        {
+            SplashKit.DrawText(ShortDescription, Color.Black, 0, 0);
         }
     }
 }

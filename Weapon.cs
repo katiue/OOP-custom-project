@@ -55,7 +55,7 @@ namespace OOP_custom_project
             durability = (stiffness) * (forgedTimes + 1);
         }
 
-        public void Draw(float x, float y)
+        public override void Draw(double x, double y)
         {
             SplashKit.DrawBitmap(bitmap, x - (bitmap.Width/2), y - (bitmap.Height/2), SplashKit.OptionScaleBmp((double)70/ (double)bitmap.Width, (double)70/ (double)bitmap.Height));
         }

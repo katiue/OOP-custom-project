@@ -25,7 +25,7 @@ namespace OOP_custom_project
         {
             get
             {
-                return "In the " + Name + " you can see:\n " + _inventory.ComponentList;
+                return "In the " + Name + " you can see:\n " + _inventory.WeaponList;
             }
         }
         public WeaponInventory Inventory
@@ -35,13 +35,13 @@ namespace OOP_custom_project
                 return _inventory;
             }
         }
-        public void Draw()
+        public override void Draw()
         {
-            for (int i = 0; i < _inventory.ComponentList.Count; i++)
+            for (int i = 0; i < _inventory.WeaponList.Count; i++)
             {
-                if (_inventory.ComponentList[i] != null)
-                    _inventory.ComponentList[i].Draw((i % 8) * 150 + 210, (i / 8) * 100 + 110 + _offsetY);
-                SplashKit.DrawText(_inventory.ComponentList[i].Name, Color.Black, "Arial", 12, (i % 8) * 150 + 165, (i / 8) * 100 + 145 + _offsetY);
+                if (_inventory.WeaponList[i] != null)
+                    _inventory.WeaponList[i].Draw((i % 8) * 150 + 210, (i / 8) * 100 + 110 + _offsetY);
+                SplashKit.DrawText(_inventory.WeaponList[i].Name, Color.Black, "Arial", 12, (i % 8) * 150 + 165, (i / 8) * 100 + 145 + _offsetY);
             }
 
             // Handle input for panning
