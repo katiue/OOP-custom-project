@@ -6,3 +6,6 @@ Link Facebook: https://www.facebook.com/katiue.1804/
 Also you can use it if you want just put my credit in.
 If any suggestion to upgrade the game, I'm hearing it. I want to make it like BlackSmith Fantasy combine with Soul Knight or Terraria.
 Unfortunately I'm not that good at art :")
+In order to run the project follow these steps
+go to Tools -> NuGet Package Manager -> Package Manager Console
+and then install the library in requirements.txt
