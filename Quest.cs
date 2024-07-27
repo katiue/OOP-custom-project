@@ -16,17 +16,17 @@ namespace OOP_custom_project
             {
                 new Mission(new string[] { "mission1" }, "Collect mineral from map", "Open map to collect 3 types of \nmineral", "In Progress", 
                 new List<GameObject> { 
-                    new Mineral(new string[] { IDgenerator() }, "", "", define.minerals[7], new List<Point2D>()),
-                    new Mineral(new string[] { IDgenerator() }, "", "", define.minerals[8], new List<Point2D>())
+                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[7], new List<Point2D>()),
+                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>())
                 }, game => game.bag.MineralBag.Inventory.Mineral.Count >= 2),
-                new Mission(new string[] { IDgenerator() }, "Upgrade minerals", "Upgrade two minerals so they have \nthe area of 15000 each", "In Progress", 
+                new Mission(new string[] { "mission2" }, "Upgrade minerals", "Upgrade two minerals so they have \nthe area of 15000 each", "In Progress", 
                 new List<GameObject> { 
-                    new Mineral(new string[] { IDgenerator() }, "", "", define.minerals[8], new List<Point2D>()) 
+                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>()) 
                 }, game => game.bag.MineralBag.Inventory.Mineral.Count(mineral => mineral.Area > 15000) >= 2),
-                new Mission(new string[] { IDgenerator() }, "Forge Weapon", "Forge two minerals into a sword", "In Progress", new List < GameObject > { 
+                new Mission(new string[] { "mission3" }, "Forge Weapon", "Forge two minerals into a sword", "In Progress", new List < GameObject > { 
                     ForgeWeapon(
-                    new Mineral(new string[] { IDgenerator() }, "", "", define.minerals[7], new List<Point2D>()),
-                    new Mineral(new string[] { IDgenerator() }, "", "", define.minerals[8], new List<Point2D>())) 
+                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[7], new List<Point2D>()),
+                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>())) 
                 }, game => game.bag.WeaponBag.Inventory.WeaponList.Count >= 1)
             };
             _game = game;
@@ -135,7 +135,7 @@ namespace OOP_custom_project
                 }
             }
         }
-        private string IDgenerator()
+        private string IDgeneratorMineral()
         {
             FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -156,11 +156,32 @@ namespace OOP_custom_project
                 return idCellValue;
             }
         }
+        private string IDgeneratorWeapon()
+        {
+            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Weapon.xlsx");
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"];
+
+                if (worksheet == null)
+                    throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
+
+                //use the newest id to add new mineral
+                int rows = worksheet.Dimension.Rows;
+                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+                if (rows > 1)
+                    idCellValue = (int.Parse(idCellValue)).ToString();
+                else
+                    idCellValue = "1";
+                return idCellValue;
+            }
+        }
         private Weapon ForgeWeapon(Mineral mineral1, Mineral mineral2)
         {
             if (define.weaponMappings.TryGetValue((mineral1.Type._name, mineral2.Type._name), out var weaponMapping))
             {
-                return new Weapon(new string[] { IDgenerator() }, weaponMapping.WeaponName, "", mineral1.Type._stiffness + mineral2.Type._stiffness, 1, mineral1.Type._name, mineral2.Type._name);
+                return new Weapon(new string[] { IDgeneratorWeapon() }, weaponMapping.WeaponName, "", mineral1.Type._stiffness + mineral2.Type._stiffness, 1, mineral1.Type._name, mineral2.Type._name);
             }
             return null;
         }
