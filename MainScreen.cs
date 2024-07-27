@@ -6,7 +6,7 @@ namespace OOP_custom_project
     public class MainScreen : IAmAScreen
     {
         private Game _game;
-        private bool tutorial = false;
+        private bool tutorial = true;
         private int scriptcount = 0;
         private string[] script = new string[]
         {
