@@ -187,10 +187,10 @@ namespace OOP_custom_project
                             _zones.Add(addedobj);
                             break;
                         case "BombMining":
-                            DisplayBomb(addX - 100, addY - 100);
+                            DisplayBomb(addX, addY);
                             break;
                         case "Examine":
-                            examine = Displayexamine(addX - 100, addY - 100);
+                            examine = Displayexamine(addX, addY);
                             break;
                     }
                     AddingObject = null;
@@ -331,12 +331,15 @@ namespace OOP_custom_project
         private void DisplayBomb(double x, double y)
         {
             notification = true;
+            int nextid = int.Parse(id);
             for (int i = 0; i< 5; i++)
             {
-                Mineral mineral = new Mineral([id], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), new List<Point2D>());
+                nextid += 1;
+                Mineral mineral = new Mineral([nextid.ToString()], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), new List<Point2D>());
                 obtainedmineral.Add(mineral);
                 _game.bag.MineralBag.Inventory.Put(mineral);
             }
+            id = nextid.ToString();
             int _currentFrame = 0;
             DateTime _lastFrameTime = DateTime.Now;
             double _frameDuration = 0.04;
@@ -380,8 +383,8 @@ namespace OOP_custom_project
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
             SplashKit.DrawTextOnBitmap(baseimg, "This place you can mine", Color.WhiteSmoke, "Arial", 0, 50, 30);
-            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x, y)._name, Color.WhiteSmoke, "Arial", 0, 30, 60);
-            string[] description = SplitParagraph(definezone.AssignMineral(x, y)._description, 22);
+            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x - 100, y - 100)._name, Color.WhiteSmoke, "Arial", 0, 30, 60);
+            string[] description = SplitParagraph(definezone.AssignMineral(x - 100, y - 100)._description, 22);
             for (int i = 0; i < description.Count(); i++)
                 SplashKit.DrawTextOnBitmap(baseimg, description[i], Color.WhiteSmoke, "Arial", 0, 30, 80 + i * 10);
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height - 20);

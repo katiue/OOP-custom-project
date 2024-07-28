@@ -112,7 +112,7 @@ namespace OOP_custom_project
 
             using (ExcelPackage package = new ExcelPackage())
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Components");
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Weapon");
 
                 // Adding headers
                 worksheet.Cells[1, 1].Value = "ID";
@@ -151,9 +151,9 @@ namespace OOP_custom_project
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage package = new ExcelPackage(fileInfo))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Components"];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"];
                 if (worksheet == null)
-                    throw new Exception("Worksheet 'Components' not found in the Excel file.");
+                    throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
 
                 int rows = worksheet.Dimension.Rows;
                 for (int row = 2; row <= rows; row++)

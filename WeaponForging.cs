@@ -55,17 +55,17 @@ namespace OOP_custom_project
                 if (y * 5 + x - 1 < mineralBag.Inventory.Mineral.Count)
                 {
                     if (Beingforged1 == null)
-                        Beingforged1 = mineralBag.Inventory.Mineral[y * 5 + x - 1];
+                        Beingforged1 =mineralBag.Inventory.Mineral[y * 5 + x - 1];
                     else if(mineralBag.Inventory.Mineral[y * 5 + x - 1].ID[0] != Beingforged1.ID[0])
                         Beingforged2 = mineralBag.Inventory.Mineral[y * 5 + x - 1];
                 }
             }
 
-            if(SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 55, 105, 115, 115))
+            if(SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 55, 105, 115, 115) && Beingforged1 != null)
             {
                 Beingforged1 = null;
             }
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 355, 105, 115, 115))
+            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 355, 105, 115, 115) && Beingforged2 != null)
             {
                 Beingforged2 = null;
             }
@@ -100,6 +100,8 @@ namespace OOP_custom_project
                     if (plan1 != null)
                     {
                         componentBag.Inventory.Put(ForgeWeapon(Beingforged1, Beingforged2));
+                        mineralBag.Inventory.Take(Beingforged1.ID[0]);
+                        mineralBag.Inventory.Take(Beingforged2.ID[0]);
                         Beingforged1 = null;
                         Beingforged2 = null;
                         GIFprocessor GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
@@ -108,6 +110,8 @@ namespace OOP_custom_project
                     else if (plan2 != null)
                     {
                         componentBag.Inventory.Put(ForgeWeapon(Beingforged2, Beingforged1));
+                        mineralBag.Inventory.Take(Beingforged1.ID[0]);
+                        mineralBag.Inventory.Take(Beingforged2.ID[0]);
                         Beingforged1 = null;
                         Beingforged2 = null;
                         GIFprocessor GifFile = new GIFprocessor("D:\\OOP-custom-project\\Pouring-molten-metal", 127, 0.1);
@@ -150,10 +154,10 @@ namespace OOP_custom_project
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage package = new ExcelPackage(fileInfo))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Components"];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"];
 
                 if (worksheet == null)
-                    throw new Exception("Worksheet 'Components' not found in the Excel file.");
+                    throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
 
                 //use the newest id to add new mineral
                 int rows = worksheet.Dimension.Rows;
