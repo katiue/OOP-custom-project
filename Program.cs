@@ -4,10 +4,17 @@ namespace OOP_custom_project
     {
         public static void Main()
         {
-            //Testing test = new();
-            //test.MakeMapObjectLayer();
-            Game game = new();
-            game.Run();
+            string purpose = "play";
+            if (purpose == "play")
+            {
+                Game game = new();
+                game.Run();
+            }
+            else if (purpose == "test")
+            {
+                Testing test = new();
+                test.MakeMapObjectLayer();
+            }
         }
     }
 }

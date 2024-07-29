@@ -6,7 +6,6 @@ namespace OOP_custom_project
     {
         private readonly Window window;
         private readonly Bitmap background = new("upgarding background", @"D:\OOP-custom-project\Image\forging_background.jpg");
-        private Mineral Mineral { get; set; }
         private readonly GachaMineral gacha = new();
         private readonly List<Mineral> minerals = [];
         private bool showbag = false;
@@ -17,6 +16,7 @@ namespace OOP_custom_project
             this.window = window;
             Mineral = mineral;
         }
+        private Mineral Mineral { get; set; }
         public void Drawing(MineralInventory _inventory)
         {
             // Handle input for panning

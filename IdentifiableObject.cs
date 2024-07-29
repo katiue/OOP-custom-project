@@ -3,7 +3,6 @@
     public class IdentifiableObject
     {
         private readonly List<string> _identifiers;
-
         public IdentifiableObject(string[] idents)
         {
             _identifiers = [];
@@ -12,12 +11,10 @@
                 _identifiers.Add(idents[i].ToLower());
             }
         }
-
         public bool AreYou(string id)
         {
             return _identifiers.Contains(id.ToLower());
         }
-
         public string FirstID
         {
             get

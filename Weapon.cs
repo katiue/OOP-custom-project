@@ -4,17 +4,15 @@ namespace OOP_custom_project
 {
     public class Weapon : GameObject
     {
-        private string mineral2;
-        private int forgedTimes;
         private Bitmap bitmap;
         private readonly Define define = new();
 
         public Weapon(string[] ids, string name, string desc, int stiffness, int forgedTimes, string mineral1, string mineral2) : base(ids, name, desc)
         {
-            this.Mineral1 = mineral1;
-            this.mineral2 = mineral2;
-            this.Stiffness = stiffness;
-            this.forgedTimes = forgedTimes;
+            Mineral1 = mineral1;
+            Mineral2 = mineral2;
+            Stiffness = stiffness;
+            ForgedTimes = forgedTimes;
             CalculateDurability();
             bitmap = LoadBitmap(mineral1, mineral2);
         }
@@ -23,22 +21,14 @@ namespace OOP_custom_project
 
         public int Stiffness { get; set; }
 
-        public int ForgedTimes
-        {
-            get { return forgedTimes; }
-            set { forgedTimes = value; }
-        }
+        public int ForgedTimes { get; set; }
 
         public string Mineral1 { get; set; }
-        public string Mineral2
-        {
-            get { return mineral2; }
-            set { mineral2 = value; }
-        }
+        public string Mineral2 { get; set; }
 
         private void CalculateDurability()
         {
-            Durability = (Stiffness) * (forgedTimes + 1);
+            Durability = (Stiffness) * (ForgedTimes + 1);
         }
 
         public override void Draw(double x, double y)

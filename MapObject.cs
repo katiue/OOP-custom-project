@@ -5,15 +5,17 @@ namespace OOP_custom_project
     public class MapObject
     {
         public readonly Bitmap[] _frames;
-        public string Name { get; set; }
-        public Rectangle Area { get; set; }
 
         public MapObject(string name, Rectangle area, int frameCount, double frameDuration, MineralType mineral)
         {
             Name = name;
             Area = area;
             _frames = LoadGifFrames(name, frameCount, frameDuration);
+            Type = mineral;
         }
+        public string Name { get; set; }
+        public Rectangle Area { get; set; }
+        public MineralType Type { get; set; }
         private static Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
         {
             Bitmap[] frames = new Bitmap[frameCount];

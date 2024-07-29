@@ -2,11 +2,11 @@
 
 namespace OOP_custom_project
 {
-    public class MineralBag : GameObject, IHaveInventory, IAmAScreen
+    public class MineralBag : GameObject, IHaveInventory
     {
         private double _offsetY;
         private DisplayMined? _display;
-        public Mineral? showing;
+        private Mineral? showing;
         public MineralBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
             Inventory = new MineralInventory();

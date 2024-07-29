@@ -105,7 +105,7 @@ namespace OOP_custom_project
                             int temp = int.Parse(id);
                             temp++;
                             id = temp.ToString();
-                            Mineral mineral = new([id], "", "", CollectMaterial(obj), []);
+                            Mineral mineral = new([id], "", "", obj.Type, []);
                             obtainedmineral.Add(mineral);
                             _game.bag.MineralBag.Inventory.Put(mineral);
                             notification = true;
@@ -152,7 +152,8 @@ namespace OOP_custom_project
 
                     SplashKit.DrawBitmap(AddingObject, posX, posY, SplashKit.OptionScaleBmp(scaleX, scaleY));
                 }
-                DrawToolBox();
+                else
+                    DrawToolBox();
                 Update();
                 SplashKit.RefreshScreen(120);
             }
@@ -179,11 +180,11 @@ namespace OOP_custom_project
                     switch (AddingObject.Name)
                     {
                         case "PikachuMiner":
-                            addedobj = new MapObject(@"D:\OOP-custom-project\pikachu_mining\", new Rectangle() { X = addX, Y = addY, Width = 150, Height = 150 }, 2, 0.1, definezone.AssignMineral(addX - 100, addY - 100));
+                            addedobj = new MapObject(@"D:\OOP-custom-project\pikachu_mining\", new Rectangle() { X = addX, Y = addY, Width = 150, Height = 150 }, 2, 0.1, definezone.AssignMineral(addX, addY));
                             mapObjects.Add(addedobj);
                             break;
                         case "ToolboxMining":
-                            addedobj = new MapObject(@"D:\OOP-custom-project\Mining_removedbg2\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
+                            addedobj = new MapObject(@"D:\OOP-custom-project\Mining_removedbg2\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX, addY));
                             mapObjects.Add(addedobj);
                             break;
                         case "BombMining":
@@ -219,11 +220,6 @@ namespace OOP_custom_project
             // Prevent moving too far to the right or bottom
             if (_offsetX < -1160) _offsetX = -1160;
             if (_offsetY < -920) _offsetY = -920;
-        }
-        private MineralType CollectMaterial(MapObject zone)
-        {
-            // Collect material from the zone
-            return definezone.AssignMineral(zone.Area.X, zone.Area.Y);
         }
         private void ShowObjectGifFrames(MapObject obj, int _currentFrame, Bitmap baseImage)
         {
@@ -330,7 +326,8 @@ namespace OOP_custom_project
             for (int i = 0; i< 5; i++)
             {
                 nextid += 1;
-                Mineral mineral = new([nextid.ToString()], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), []);
+                MapObject obj = new("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x, y));
+                Mineral mineral = new([nextid.ToString()], "", "", obj.Type, []);
                 obtainedmineral.Add(mineral);
                 _game.bag.MineralBag.Inventory.Put(mineral);
             }
@@ -376,12 +373,15 @@ namespace OOP_custom_project
             Bitmap obtained = new("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
             Bitmap baseimg = new("examine", obtained.Width, obtained.Height + 20);
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
+
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
             SplashKit.DrawTextOnBitmap(baseimg, "This place you can mine", Color.WhiteSmoke, "Arial", 0, 50, 30);
-            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x - 100, y - 100).Name, Color.WhiteSmoke, "Arial", 0, 30, 60);
-            string[] description = SplitParagraph(definezone.AssignMineral(x - 100, y - 100).Description, 22);
+            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x, y).Name, Color.WhiteSmoke, "Arial", 0, 30, 60);
+
+            string[] description = SplitParagraph(definezone.AssignMineral(x, y).Description, 22);
             for (int i = 0; i < description.Length; i++)
                 SplashKit.DrawTextOnBitmap(baseimg, description[i], Color.WhiteSmoke, "Arial", 0, 30, 80 + i * 10);
+
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height - 20);
             return baseimg;
         }

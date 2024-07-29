@@ -1,23 +1,13 @@
 ﻿namespace OOP_custom_project
 {
-    public class MineralZone : GameObject
+    public class MineralZone(string[] ids, string name, string desc, MineralType mineral, int quantity, double startX, double startY, double endX, double endY) : GameObject(ids, name, desc)
     {
-        public MineralType _mineral;
-        public int Max_quantity;
-        public double startX;
-        public double startY;
-        public double endX;
-        public double endY;
-
-        public MineralZone(string[] ids, string name, string desc, MineralType mineral, int quantity, double startX, double startY, double endX, double endY) : base(ids, name, desc)
-        {
-            _mineral = mineral;
-            Max_quantity = quantity;
-            this.startX = startX;
-            this.startY = startY;
-            this.endX = endX;
-            this.endY = endY;
-        }
+        public MineralType _mineral = mineral;
+        public int Max_quantity = quantity;
+        public double startX = startX;
+        public double startY = startY;
+        public double endX = endX;
+        public double endY = endY;
 
         public void ReFill()
         {

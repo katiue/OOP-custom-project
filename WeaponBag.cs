@@ -2,7 +2,7 @@
 
 namespace OOP_custom_project
 {
-    public class WeaponBag : GameObject, IHaveInventory, IAmAScreen
+    public class WeaponBag : GameObject, IHaveInventory
     {
         private float _offsetY = 0;
         public WeaponBag(string[] ids, string name, string desc) : base(ids, name, desc)

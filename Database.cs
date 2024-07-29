@@ -93,15 +93,15 @@ namespace OOP_custom_project
             }
             return minerals;
         }
-        public static void ExportComponentsToExcel(List<Weapon> components, string filePath)
+        public static void ExportComponentsToExcel(List<Weapon> weapons, string filePath)
         {
-            if (components.Count < 1)
+            if (weapons.Count < 1)
             {
                 return;
             }
 
             // Sort components by Order
-            var sortedComponents = components.OrderBy(c => ToInt(c.ID)).ToList();
+            var sortedweapons = weapons.OrderBy(c => ToInt(c.ID)).ToList();
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -119,9 +119,9 @@ namespace OOP_custom_project
             worksheet.Cells[1, 8].Value = "Second Mineral";
 
             // Adding component data
-            for (int i = 0; i < sortedComponents.Count; i++)
+            for (int i = 0; i < sortedweapons.Count; i++)
             {
-                Weapon component = sortedComponents[i];
+                Weapon component = sortedweapons[i];
                 worksheet.Cells[i + 2, 1].Value = string.Join(",", component.ID);
                 worksheet.Cells[i + 2, 2].Value = component.Name;
                 worksheet.Cells[i + 2, 3].Value = component.ShortDescription;
