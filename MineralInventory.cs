@@ -2,42 +2,30 @@
 {
     public class MineralInventory
     {
-        private List<Mineral> mineral;
         public MineralInventory()
         {
-            mineral = new List<Mineral>();
-        }
-        public bool HasItem(string id)
-        {
-            foreach (var i in mineral)
-            {
-                if (i.AreYou(id))
-                {
-                    return true;
-                }
-            }
-            return false;
+            Mineral = [];
         }
         public void Put(Mineral itm)
         {
-            mineral.Add(itm);
+            Mineral.Add(itm);
         }
         public void Put(List<Mineral> itm)
         {
             foreach (var i in itm)
             {
-                mineral.Add(i);
+                Mineral.Add(i);
             }
         }
         public Mineral Take(string id)
         {
             Mineral takenItem = Fetch(id);
-            mineral.Remove(takenItem);
+            Mineral.Remove(takenItem);
             return takenItem;
         }
         public Mineral Fetch(string id)
         {
-            foreach (var i in mineral)
+            foreach (var i in Mineral)
             {
                 if (i.AreYou(id))
                 {
@@ -46,12 +34,6 @@
             }
             return null;
         }
-        public List<Mineral> Mineral
-        {
-            get
-            {
-                return mineral;
-            }
-        }
+        public List<Mineral> Mineral { get; }
     }
 }

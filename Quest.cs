@@ -6,29 +6,29 @@ namespace OOP_custom_project
 {
     public class Quest : IAmAScreen
     {
-        private Define define = new Define();
-        private List<Mission> _missions;
-        private Game _game;
+        private readonly Define define = new();
+        private readonly List<Mission> _missions;
+        private readonly Game _game;
         private Mission? display;
         public Quest(Game game) 
         {
-            _missions = new List<Mission>
-            {
-                new Mission(new string[] { "mission1" }, "Collect mineral from map", "Open map to collect 3 types of \nmineral", "In Progress", 
-                new List<GameObject> { 
-                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[7], new List<Point2D>()),
-                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>())
-                }, game => game.bag.MineralBag.Inventory.Mineral.Count >= 2),
-                new Mission(new string[] { "mission2" }, "Upgrade minerals", "Upgrade two minerals so they have \nthe area of 15000 each", "In Progress", 
-                new List<GameObject> { 
-                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>()) 
-                }, game => game.bag.MineralBag.Inventory.Mineral.Count(mineral => mineral.Area > 15000) >= 2),
-                new Mission(new string[] { "mission3" }, "Forge Weapon", "Forge two minerals into a sword", "In Progress", new List < GameObject > { 
+            _missions =
+            [
+                new(["mission1"], "Collect mineral from map", "Open map to collect 3 types of \nmineral", "In Progress", 
+                [ 
+                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[7], []),
+                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], [])
+                ], game => game.bag.MineralBag.Inventory.Mineral.Count >= 2),
+                new(["mission2"], "Upgrade minerals", "Upgrade two minerals so they have \nthe area of 15000 each", "In Progress", 
+                [ 
+                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], []) 
+                ], game => game.bag.MineralBag.Inventory.Mineral.Count(mineral => mineral.Area > 15000) >= 2),
+                new(["mission3"], "Forge Weapon", "Forge two minerals into a sword", "In Progress", [ 
                     ForgeWeapon(
-                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[7], new List<Point2D>()),
-                    new Mineral(new string[] { IDgeneratorMineral() }, "", "", define.minerals[8], new List<Point2D>())) 
-                }, game => game.bag.WeaponBag.Inventory.WeaponList.Count >= 1)
-            };
+                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[7], []),
+                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], [])) 
+                ], game => game.bag.WeaponBag.Inventory.WeaponList.Count >= 1)
+            ];
             _game = game;
         }
         public void Draw()
@@ -37,7 +37,7 @@ namespace OOP_custom_project
             SplashKit.DrawBitmap(new Bitmap("background", @"D:\OOP-custom-project\Image\Main-theme-background.png"), 0, 0);
             for (int i = 0; i < _missions.Count; i++)
             {
-                Bitmap mission = new Bitmap("mission", 400, 35);
+                Bitmap mission = new("mission", 400, 35);
                 mission.Clear(Color.RGBAColor(128, 128, 128, 128));
 
                 SplashKit.DrawTextOnBitmap(mission, _missions[i].Name, Color.Black, "Arial", 12, 10, 10);
@@ -50,7 +50,7 @@ namespace OOP_custom_project
             //display mission detail
             if (display != null)
             {
-                Bitmap detail = new Bitmap("mission detail", 300, 350);
+                Bitmap detail = new("mission detail", 300, 350);
                 detail.Clear(Color.RGBAColor(128, 128, 128, 128));
 
                 SplashKit.DrawTextOnBitmap(detail, display.Name, Color.OrangeRed, "Arial", 12, 10, 10);
@@ -68,20 +68,18 @@ namespace OOP_custom_project
                     if (display.Reward[i] is Mineral)
                     {
                         Mineral mineral = display.Reward[i] as Mineral;
-                        if (mineral != null)
-                            mineral.Draw(270 + 70 * i, 100, 0.1);
+                        mineral?.Draw(270 + 70 * i, 100, 0.1);
                     }
                     else if (display.Reward[i] is Weapon)
                     {
                         Weapon weapon = display.Reward[i] as Weapon;
-                        if (weapon != null)
-                            weapon.Draw(680 + 70 * i, 500);
+                        weapon?.Draw(680 + 70 * i, 500);
                     }
                 }
 
                 detail.Dispose();
 
-                Bitmap claim_button = new Bitmap("claim", 78, 20);
+                Bitmap claim_button = new("claim", 78, 20);
                 claim_button.Clear(Color.RGBAColor(128, 128, 128, 128));
                 if(display.Status != "Claimed")
                     SplashKit.DrawTextOnBitmap(claim_button, "Claim", Color.Black, "Arial", 12, 20, 5);
@@ -129,59 +127,49 @@ namespace OOP_custom_project
         {
             foreach (Mission mission in _missions)
             {
-                if (mission.CheckCondition(_game, mission.Condition) && mission.Status != "Claimed")
+                if (Mission.CheckCondition(_game, mission.Condition) && mission.Status != "Claimed")
                 {
                     mission.Status = "Completed";
                 }
             }
         }
-        private string IDgeneratorMineral()
+        private static string IDgeneratorMineral()
         {
-            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
+            FileInfo fileInfo = new("D:\\OOP-custom-project\\Mineral.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
+            using ExcelPackage package = new(fileInfo);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"] ?? throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
 
-                if (worksheet == null)
-                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
-
-                //use the newest id to add new mineral
-                int rows = worksheet.Dimension.Rows;
-                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-                if (rows > 1)
-                    idCellValue = (int.Parse(idCellValue)).ToString();
-                else
-                    idCellValue = "1";
-                return idCellValue;
-            }
+            //use the newest id to add new mineral
+            int rows = worksheet.Dimension.Rows;
+            string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+            if (rows > 1)
+                idCellValue = (int.Parse(idCellValue)).ToString();
+            else
+                idCellValue = "1";
+            return idCellValue;
         }
-        private string IDgeneratorWeapon()
+        private static string IDgeneratorWeapon()
         {
-            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Weapon.xlsx");
+            FileInfo fileInfo = new("D:\\OOP-custom-project\\Weapon.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"];
+            using ExcelPackage package = new(fileInfo);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"] ?? throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
 
-                if (worksheet == null)
-                    throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
-
-                //use the newest id to add new mineral
-                int rows = worksheet.Dimension.Rows;
-                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-                if (rows > 1)
-                    idCellValue = (int.Parse(idCellValue)).ToString();
-                else
-                    idCellValue = "1";
-                return idCellValue;
-            }
+            //use the newest id to add new mineral
+            int rows = worksheet.Dimension.Rows;
+            string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+            if (rows > 1)
+                idCellValue = (int.Parse(idCellValue)).ToString();
+            else
+                idCellValue = "1";
+            return idCellValue;
         }
         private Weapon ForgeWeapon(Mineral mineral1, Mineral mineral2)
         {
-            if (define.weaponMappings.TryGetValue((mineral1.Type._name, mineral2.Type._name), out var weaponMapping))
+            if (define.weaponMappings.TryGetValue((mineral1.Type.Name, mineral2.Type.Name), out var weaponMapping))
             {
-                return new Weapon(new string[] { IDgeneratorWeapon() }, weaponMapping.WeaponName, "", mineral1.Type._stiffness + mineral2.Type._stiffness, 1, mineral1.Type._name, mineral2.Type._name);
+                return new Weapon([IDgeneratorWeapon()], weaponMapping.WeaponName, "", mineral1.Type.Stiffness + mineral2.Type.Stiffness, 1, mineral1.Type.Name, mineral2.Type.Name);
             }
             return null;
         }

@@ -5,5 +5,4 @@
         public required string WeaponName { get; set; }
         public required string ImageFile { get; set; }
     }
-
 }

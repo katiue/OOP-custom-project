@@ -5,30 +5,28 @@ namespace OOP_custom_project
 {
     public class Testing
     {
-        private Bitmap _mapImage;
+        private readonly Bitmap _mapImage;
         private float _zoom = 1.0f;
-        private Bitmap Layer;
         private float _offsetY, _offsetX = 0;
         public Testing()
         {
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\Image\map.webp");
-            Layer = new Bitmap("Layer", (int)(_mapImage.Width*_zoom), (int)(_mapImage.Height * _zoom));
         }
 
         public void MakeMapObjectLayer()
         {
-            Window window = new Window("Game screen", 1090, 820);
+            Window window = new("Game screen", 1090, 820);
             do
             {
                 SplashKit.ProcessEvents();
                 SplashKit.ClearScreen();
 
-                SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY);
+                SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
 
-                Define difineZone = new Define();
+                Define difineZone = new();
                 foreach (var zone in difineZone.mineralZones)
                 {
-                    SplashKit.FillRectangle(zone._mineral._color, zone.startX + _offsetX, zone.startY + _offsetY, zone.endX - zone.startX, zone.endY - zone.startY);
+                    SplashKit.FillRectangle(zone._mineral.Color, zone.startX + _offsetX, zone.startY + _offsetY, zone.endX - zone.startX, zone.endY - zone.startY);
                 }
 
                 // Handle input for zooming

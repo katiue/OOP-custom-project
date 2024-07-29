@@ -8,7 +8,7 @@ namespace OOP_custom_project
         public Database()
         {
         }
-        public void ExportMineralsToExcel(List<Mineral> minerals, string filePath)
+        public static void ExportMineralsToExcel(List<Mineral> minerals, string filePath)
         {
             if(minerals.Count < 1)
             {
@@ -20,53 +20,48 @@ namespace OOP_custom_project
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            using (ExcelPackage package = new ExcelPackage())
+            using ExcelPackage package = new();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Minerals");
+
+            // Adding headers
+            worksheet.Cells[1, 1].Value = "ID";
+            worksheet.Cells[1, 2].Value = "Name";
+            worksheet.Cells[1, 3].Value = "Description";
+            worksheet.Cells[1, 4].Value = "Type Name";
+            worksheet.Cells[1, 5].Value = "Type Description";
+            worksheet.Cells[1, 6].Value = "Stiffness";
+            worksheet.Cells[1, 7].Value = "Max Quantity";
+            worksheet.Cells[1, 8].Value = "Color";
+            worksheet.Cells[1, 9].Value = "Points";
+
+            // Adding mineral data
+            for (int i = 0; i < sortedMinerals.Count; i++)
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Minerals");
-
-                // Adding headers
-                worksheet.Cells[1, 1].Value = "ID";
-                worksheet.Cells[1, 2].Value = "Name";
-                worksheet.Cells[1, 3].Value = "Description";
-                worksheet.Cells[1, 4].Value = "Type Name";
-                worksheet.Cells[1, 5].Value = "Type Description";
-                worksheet.Cells[1, 6].Value = "Stiffness";
-                worksheet.Cells[1, 7].Value = "Max Quantity";
-                worksheet.Cells[1, 8].Value = "Color";
-                worksheet.Cells[1, 9].Value = "Points";
-
-                // Adding mineral data
-                for (int i = 0; i < sortedMinerals.Count; i++)
-                {
-                    Mineral mineral = sortedMinerals[i];
-                    worksheet.Cells[i + 2, 1].Value = string.Join(",", mineral.ID);
-                    worksheet.Cells[i + 2, 2].Value = mineral.Name;
-                    worksheet.Cells[i + 2, 3].Value = mineral.ShortDescription;
-                    worksheet.Cells[i + 2, 4].Value = mineral.Type._name;
-                    worksheet.Cells[i + 2, 5].Value = mineral.Type._description;
-                    worksheet.Cells[i + 2, 6].Value = mineral.Type._stiffness;
-                    worksheet.Cells[i + 2, 7].Value = mineral.Type._maxquantity;
-                    worksheet.Cells[i + 2, 8].Value = ColorToString(mineral.Type._color);
-                    worksheet.Cells[i + 2, 9].Value = PointsToString(mineral.points);
-                }
-
-                // Saving the file
-                FileInfo fileInfo = new FileInfo(filePath);
-                package.SaveAs(fileInfo);
+                Mineral mineral = sortedMinerals[i];
+                worksheet.Cells[i + 2, 1].Value = string.Join(",", mineral.ID);
+                worksheet.Cells[i + 2, 2].Value = mineral.Name;
+                worksheet.Cells[i + 2, 3].Value = mineral.ShortDescription;
+                worksheet.Cells[i + 2, 4].Value = mineral.Type.Name;
+                worksheet.Cells[i + 2, 5].Value = mineral.Type.Description;
+                worksheet.Cells[i + 2, 6].Value = mineral.Type.Stiffness;
+                worksheet.Cells[i + 2, 7].Value = mineral.Type.MaxQuantity;
+                worksheet.Cells[i + 2, 8].Value = ColorToString(mineral.Type.Color);
+                worksheet.Cells[i + 2, 9].Value = PointsToString(mineral.Points);
             }
+
+            // Saving the file
+            FileInfo fileInfo = new(filePath);
+            package.SaveAs(fileInfo);
         }
-        public List<Mineral> ImportMineralsFromExcel(string filePath)
+        public static List<Mineral> ImportMineralsFromExcel(string filePath)
         {
-            List<Mineral> minerals = new List<Mineral>();
+            List<Mineral> minerals = [];
 
-            FileInfo fileInfo = new FileInfo(filePath);
+            FileInfo fileInfo = new(filePath);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            using (ExcelPackage package = new(fileInfo))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
-                if (worksheet == null)
-                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
-
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"] ?? throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
                 int rows = worksheet.Dimension.Rows;
                 for (int row = 2; row <= rows; row++)
                 {
@@ -88,9 +83,9 @@ namespace OOP_custom_project
                         Color color = ParseColor(colorString);
                         List<Point2D> points = StringToPoints(pointsString);
 
-                        MineralType type = new MineralType(typeName, typeDescription, stiffness, maxQuantity, color);
+                        MineralType type = new(typeName, typeDescription, stiffness, maxQuantity, color);
 
-                        Mineral mineral = new Mineral(ids, name, description, type, points);
+                        Mineral mineral = new(ids, name, description, type, points);
 
                         minerals.Add(mineral);
                     }
@@ -98,7 +93,7 @@ namespace OOP_custom_project
             }
             return minerals;
         }
-        public void ExportComponentsToExcel(List<Weapon> components, string filePath)
+        public static void ExportComponentsToExcel(List<Weapon> components, string filePath)
         {
             if (components.Count < 1)
             {
@@ -110,51 +105,46 @@ namespace OOP_custom_project
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            using (ExcelPackage package = new ExcelPackage())
+            using ExcelPackage package = new();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Weapon");
+
+            // Adding headers
+            worksheet.Cells[1, 1].Value = "ID";
+            worksheet.Cells[1, 2].Value = "Name";
+            worksheet.Cells[1, 3].Value = "Description";
+            worksheet.Cells[1, 4].Value = "Stiffness";
+            worksheet.Cells[1, 5].Value = "ForgedTimes";
+            worksheet.Cells[1, 6].Value = "Durability";
+            worksheet.Cells[1, 7].Value = "First Mineral";
+            worksheet.Cells[1, 8].Value = "Second Mineral";
+
+            // Adding component data
+            for (int i = 0; i < sortedComponents.Count; i++)
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Weapon");
-
-                // Adding headers
-                worksheet.Cells[1, 1].Value = "ID";
-                worksheet.Cells[1, 2].Value = "Name";
-                worksheet.Cells[1, 3].Value = "Description";
-                worksheet.Cells[1, 4].Value = "Stiffness";
-                worksheet.Cells[1, 5].Value = "ForgedTimes";
-                worksheet.Cells[1, 6].Value = "Durability";
-                worksheet.Cells[1, 7].Value = "First Mineral";
-                worksheet.Cells[1, 8].Value = "Second Mineral";
-
-                // Adding component data
-                for (int i = 0; i < sortedComponents.Count; i++)
-                {
-                    Weapon component = sortedComponents[i];
-                    worksheet.Cells[i + 2, 1].Value = string.Join(",", component.ID);
-                    worksheet.Cells[i + 2, 2].Value = component.Name;
-                    worksheet.Cells[i + 2, 3].Value = component.ShortDescription;
-                    worksheet.Cells[i + 2, 4].Value = component.Stiffness;
-                    worksheet.Cells[i + 2, 5].Value = component.ForgedTimes;
-                    worksheet.Cells[i + 2, 6].Value = component.Durability;
-                    worksheet.Cells[i + 2, 7].Value = component.Mineral1;
-                    worksheet.Cells[i + 2, 8].Value = component.Mineral2;
-                }
-
-                // Saving the file
-                FileInfo fileInfo = new FileInfo(filePath);
-                package.SaveAs(fileInfo);
+                Weapon component = sortedComponents[i];
+                worksheet.Cells[i + 2, 1].Value = string.Join(",", component.ID);
+                worksheet.Cells[i + 2, 2].Value = component.Name;
+                worksheet.Cells[i + 2, 3].Value = component.ShortDescription;
+                worksheet.Cells[i + 2, 4].Value = component.Stiffness;
+                worksheet.Cells[i + 2, 5].Value = component.ForgedTimes;
+                worksheet.Cells[i + 2, 6].Value = component.Durability;
+                worksheet.Cells[i + 2, 7].Value = component.Mineral1;
+                worksheet.Cells[i + 2, 8].Value = component.Mineral2;
             }
+
+            // Saving the file
+            FileInfo fileInfo = new(filePath);
+            package.SaveAs(fileInfo);
         }
-        public List<Weapon> ImportComponentsFromExcel(string filePath)
+        public static List<Weapon> ImportComponentsFromExcel(string filePath)
         {
-            List<Weapon> components = new List<Weapon>();
+            List<Weapon> components = [];
 
-            FileInfo fileInfo = new FileInfo(filePath);
+            FileInfo fileInfo = new(filePath);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
+            using (ExcelPackage package = new(fileInfo))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"];
-                if (worksheet == null)
-                    throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
-
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"] ?? throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
                 int rows = worksheet.Dimension.Rows;
                 for (int row = 2; row <= rows; row++)
                 {
@@ -174,8 +164,10 @@ namespace OOP_custom_project
                         int forgedTimes = int.Parse(forgedTimesCellValue);
                         int durability = int.Parse(durabilityCellValue);
 
-                        Weapon component = new Weapon(ids, name, description, stiffness, forgedTimes, mineral1, mineral2);
-                        component.Durability = durability;
+                        Weapon component = new(ids, name, description, stiffness, forgedTimes, mineral1, mineral2)
+                        {
+                            Durability = durability
+                        };
 
                         components.Add(component);
                     }
@@ -192,13 +184,13 @@ namespace OOP_custom_project
             double a = double.Parse(rgba[3]);
             return Color.RGBAColor(r, g, b, a);
         }
-        private string ColorToString(Color color)
+        private static string ColorToString(Color color)
         {
             return $"Color [{color.R},{color.G},{color.B},{color.A}]";
         }
         private static List<Point2D> StringToPoints(string pointsString)
         {
-            List<Point2D> points = new List<Point2D>();
+            List<Point2D> points = [];
             string[] pointsArray = pointsString.Split(';');
             foreach (string point in pointsArray)
             {
@@ -209,11 +201,11 @@ namespace OOP_custom_project
             }
             return points;
         }
-        private string PointsToString(List<Point2D> points)
+        private static string PointsToString(List<Point2D> points)
         {
             return string.Join(";", points.Select(p => $"({p.X},{p.Y})"));
         }
-        private int ToInt(string[] s)
+        private static int ToInt(string[] s)
         {
             int result = 0;
             foreach (string i in s)

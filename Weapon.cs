@@ -4,34 +4,24 @@ namespace OOP_custom_project
 {
     public class Weapon : GameObject
     {
-        private string mineral1;
         private string mineral2;
-        private int durability;
-        private int stiffness;
         private int forgedTimes;
         private Bitmap bitmap;
+        private readonly Define define = new();
 
         public Weapon(string[] ids, string name, string desc, int stiffness, int forgedTimes, string mineral1, string mineral2) : base(ids, name, desc)
         {
-            this.mineral1 = mineral1;
+            this.Mineral1 = mineral1;
             this.mineral2 = mineral2;
-            this.stiffness = stiffness;
+            this.Stiffness = stiffness;
             this.forgedTimes = forgedTimes;
             CalculateDurability();
             bitmap = LoadBitmap(mineral1, mineral2);
         }
 
-        public int Durability
-        {
-            get { return durability; }
-            set { durability = value; }
-        }
+        public int Durability { get; set; }
 
-        public int Stiffness
-        {
-            get { return stiffness; }
-            set { stiffness = value; }
-        }
+        public int Stiffness { get; set; }
 
         public int ForgedTimes
         {
@@ -39,11 +29,7 @@ namespace OOP_custom_project
             set { forgedTimes = value; }
         }
 
-        public string Mineral1
-        {
-            get { return mineral1; }
-            set { mineral1 = value; }
-        }
+        public string Mineral1 { get; set; }
         public string Mineral2
         {
             get { return mineral2; }
@@ -52,7 +38,7 @@ namespace OOP_custom_project
 
         private void CalculateDurability()
         {
-            durability = (stiffness) * (forgedTimes + 1);
+            Durability = (Stiffness) * (forgedTimes + 1);
         }
 
         public override void Draw(double x, double y)
@@ -61,7 +47,6 @@ namespace OOP_custom_project
         }
         private Bitmap LoadBitmap(string mineral1, string mineral2)
         {
-            Define define = new();
             if(define.weaponMappings.TryGetValue((mineral1, mineral2), out var weaponMapping))
             {
                 bitmap = new Bitmap(weaponMapping.WeaponName, weaponMapping.ImageFile);

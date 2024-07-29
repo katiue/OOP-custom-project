@@ -2,11 +2,11 @@
 {
     public class IdentifiableObject
     {
-        private List<string> _identifiers;
+        private readonly List<string> _identifiers;
 
         public IdentifiableObject(string[] idents)
         {
-            _identifiers = new List<string>();
+            _identifiers = [];
             for (int i = 0; i < idents.Length; i++)
             {
                 _identifiers.Add(idents[i].ToLower());
@@ -31,11 +31,6 @@
                     return _identifiers.First();
                 }
             }
-        }
-
-        public void AddIdentifier(string id)
-        {
-            _identifiers.Add(id.ToLower());
         }
     }
 }

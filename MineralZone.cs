@@ -21,7 +21,8 @@
 
         public void ReFill()
         {
-            Max_quantity = _mineral._maxquantity;
+            Max_quantity = _mineral.MaxQuantity;
         }
+
     }
 }

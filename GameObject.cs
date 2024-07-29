@@ -3,34 +3,20 @@ namespace OOP_custom_project
 {
     public class GameObject : IdentifiableObject
     {
-        private string[] _ids;
-        private string _name;
-        private string _description;
+        private readonly string _description;
         public GameObject(string[] ids,string name , string desc) : base(ids)
         {
-            _ids = ids;
+            ID = ids;
             _description = desc;
-            _name = name;
+            Name = name;
         }
-        public string[] ID
-        {
-            get
-            {
-                return _ids;
-            }
-        }
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string[] ID { get; }
+        public string Name { get; }
         public string ShortDescription
         {
             get
             {
-                return $"{_name} ({FirstID})";
+                return $"{Name} ({FirstID})";
             }
         }
         public virtual string FullDescription

@@ -5,23 +5,23 @@ namespace OOP_custom_project
 {
     public class InteractiveMap : IAmAScreen
     {
+        private string id;
         private float _zoom;
         private float _offsetX, _offsetY;
         private bool notification = false;
-        private Bitmap _mapImage;
+        private readonly Bitmap _mapImage;
         private Bitmap? AddingObject;
         private Bitmap? examine;
-        private Bitmap[] tools;
-        private Game _game;
-        private List<MapObject> _zones;
-        private List<Mineral> obtainedmineral;
-        private Define definezone = new Define();
-        private string id;
+        private readonly Bitmap[] tools;
+        private readonly Game _game;
+        private readonly List<MapObject> mapObjects;
+        private readonly List<Mineral> obtainedmineral;
+        private readonly Define definezone = new();
 
-        public InteractiveMap(Window window, Game game)
+        public InteractiveMap(Game game)
         {
             id = IDgenerator();
-            obtainedmineral = new List<Mineral>();
+            obtainedmineral = [];
             _game = game;
             _mapImage = new Bitmap("Map", @"D:\OOP-custom-project\Image\map.webp");
             _zoom = 1.7f;
@@ -29,12 +29,12 @@ namespace OOP_custom_project
             _offsetY = 0.0f;
             AddingObject = null;
             // Initialize zones
-            _zones = new List<MapObject>
-            {
-                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 100, Y = 100, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(100, 100)),
-                new MapObject("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(300, 300))
+            mapObjects =
+            [
+                new("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 100, Y = 100, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(100, 100)),
+                new("D:\\OOP-custom-project\\Mining_removedbg2\\", new Rectangle() { X = 300, Y = 300, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(300, 300))
                 // Add more zones as needed
-            };
+            ];
 
             tools = [
                 new Bitmap("PikachuMiner", @"D:\OOP-custom-project\pikachu_mining\frame_0_delay-0.1s.png"),
@@ -53,9 +53,9 @@ namespace OOP_custom_project
                 SplashKit.ProcessEvents();
                 SplashKit.ClearScreen();
 
-                Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\Image\background.png");
+                Bitmap mapImage = new("Background", @"D:\OOP-custom-project\Image\background.png");
                 SplashKit.DrawBitmap(mapImage, _offsetX-120, _offsetY-120, SplashKit.OptionScaleBmp(2.2, 1.5));
-                SplashKit.DrawBitmapOnBitmap(_mapImage, new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
+                SplashKit.DrawBitmapOnBitmap(_mapImage, new("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
 
                 if (_game.window.CloseRequested)
@@ -72,19 +72,19 @@ namespace OOP_custom_project
                 }
 
                 // Create a new bitmap with a transparent background
-                Bitmap baseImage = new Bitmap("BaseImage", _mapImage.Width, _mapImage.Height);
+                Bitmap baseImage = new("BaseImage", _mapImage.Width, _mapImage.Height);
                 baseImage.Clear(Color.RGBAColor(0, 0, 0, 0));
 
-                foreach (var zone in _zones)
+                foreach (var obj in mapObjects)
                 {
-                    Rectangle scaledArea = zone.Area;
-                    scaledArea.X = zone.Area.X + _offsetX;
-                    scaledArea.Y = zone.Area.Y + _offsetY;
-                    scaledArea.Width = zone.Area.Width / Math.Max(2.5f, _zoom);
-                    scaledArea.Height = zone.Area.Height / Math.Max(2.5f, _zoom);
+                    Rectangle scaledArea = obj.Area;
+                    scaledArea.X = obj.Area.X + _offsetX;
+                    scaledArea.Y = obj.Area.Y + _offsetY;
+                    scaledArea.Width = obj.Area.Width / Math.Max(2.5f, _zoom);
+                    scaledArea.Height = obj.Area.Height / Math.Max(2.5f, _zoom);
 
-                    double addX = zone.Area.X - (scaledArea.Width / 2);
-                    double addY = zone.Area.Y - (scaledArea.Height / 2);
+                    double addX = obj.Area.X - (scaledArea.Width / 2);
+                    double addY = obj.Area.Y - (scaledArea.Height / 2);
 
                     //Find middle point of the map
                     double midX = _mapImage.Width / 2;
@@ -105,7 +105,7 @@ namespace OOP_custom_project
                             int temp = int.Parse(id);
                             temp++;
                             id = temp.ToString();
-                            Mineral mineral = new Mineral(new string[] { id }, "", "", CollectMaterial(zone), new List<Point2D>());
+                            Mineral mineral = new([id], "", "", CollectMaterial(obj), []);
                             obtainedmineral.Add(mineral);
                             _game.bag.MineralBag.Inventory.Put(mineral);
                             notification = true;
@@ -113,7 +113,7 @@ namespace OOP_custom_project
                     }
 
                     //Run objects animation
-                    ShowObjectGifFrames(_game.window, zone, _currentFrame, baseImage);
+                    ShowObjectGifFrames(obj, _currentFrame, baseImage);
                 }
                 //Draw animation layer
                 SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
@@ -157,7 +157,7 @@ namespace OOP_custom_project
                 SplashKit.RefreshScreen(120);
             }
         }
-        public void Update()
+        private void Update()
         {
             // Handle input for zooming
             Vector2D scroll = SplashKit.MouseWheelScroll();
@@ -180,11 +180,11 @@ namespace OOP_custom_project
                     {
                         case "PikachuMiner":
                             addedobj = new MapObject(@"D:\OOP-custom-project\pikachu_mining\", new Rectangle() { X = addX, Y = addY, Width = 150, Height = 150 }, 2, 0.1, definezone.AssignMineral(addX - 100, addY - 100));
-                            _zones.Add(addedobj);
+                            mapObjects.Add(addedobj);
                             break;
                         case "ToolboxMining":
                             addedobj = new MapObject(@"D:\OOP-custom-project\Mining_removedbg2\", new Rectangle() { X = addX, Y = addY, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(addX - 100, addY - 100));
-                            _zones.Add(addedobj);
+                            mapObjects.Add(addedobj);
                             break;
                         case "BombMining":
                             DisplayBomb(addX, addY);
@@ -225,9 +225,9 @@ namespace OOP_custom_project
             // Collect material from the zone
             return definezone.AssignMineral(zone.Area.X, zone.Area.Y);
         }
-        private void ShowObjectGifFrames(Window window, MapObject obj, int _currentFrame, Bitmap baseImage)
+        private void ShowObjectGifFrames(MapObject obj, int _currentFrame, Bitmap baseImage)
         {
-            _currentFrame = (_currentFrame % obj._frames.Length );
+            _currentFrame %= obj._frames.Length ;
             // Get the dimensions of the box
             double BoxWidth = obj.Area.Width / Math.Max(2.5f, _zoom);
             double BoxHeight = obj.Area.Height / Math.Max(2.5f, _zoom);
@@ -277,15 +277,15 @@ namespace OOP_custom_project
         }
         private Bitmap DrawObtained()
         {
-            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
-            Bitmap baseimg = new Bitmap("bitmap", obtained.Width, obtained.Height+20);
+            Bitmap obtained = new("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
+            Bitmap baseimg = new("bitmap", obtained.Width, obtained.Height+20);
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
             SplashKit.DrawTextOnBitmap(baseimg, "Obtained", Color.WhiteSmoke, "Arial", 0, 110, 30);
             if(obtainedmineral.Count == 1)
             {
                 obtainedmineral[0].Draw(50,-100,0.15);
-                showdetails(obtainedmineral[0]);
+                Showdetails(obtainedmineral[0]);
             }
             else
             {
@@ -297,36 +297,31 @@ namespace OOP_custom_project
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height -  20);
             return baseimg;
         }
-        private void showdetails(Mineral mineral)
+        private static void Showdetails(Mineral mineral)
         {
-            Bitmap bitmap = new Bitmap("bitmap", 200, 200);
+            Bitmap bitmap = new("bitmap", 200, 200);
             bitmap.Clear(Color.RGBAColor(0, 0, 0, 0));
             //show details of the mineral
-            SplashKit.DrawTextOnBitmap(bitmap,"Type: " + mineral.Type._name, Color.White, "Arial", 20, 30, 70);
-            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.White, "Arial", 20, 30, 90);
+            SplashKit.DrawTextOnBitmap(bitmap,"Type: " + mineral.Type.Name, Color.White, "Arial", 20, 30, 70);
+            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type.Stiffness, Color.White, "Arial", 20, 30, 90);
             SplashKit.DrawTextOnBitmap(bitmap, "Size: " + Math.Abs(mineral.Area), Color.White, "Arial", 20, 30, 110);
             SplashKit.DrawBitmap(bitmap, 600, 200, SplashKit.OptionScaleBmp(1.5,1.5));
         }
-        private string IDgenerator()
+        private static string IDgenerator()
         {
-            FileInfo fileInfo = new FileInfo("D:\\OOP-custom-project\\Mineral.xlsx");
+            FileInfo fileInfo = new("D:\\OOP-custom-project\\Mineral.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(fileInfo))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"];
+            using ExcelPackage package = new(fileInfo);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"] ?? throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
 
-                if (worksheet == null)
-                    throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
-
-                //use the newest id to add new mineral
-                int rows = worksheet.Dimension.Rows;
-                string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-                if (rows > 1)
-                    idCellValue = (int.Parse(idCellValue)).ToString();
-                else
-                    idCellValue = "1";
-                return idCellValue;
-            }
+            //use the newest id to add new mineral
+            int rows = worksheet.Dimension.Rows;
+            string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
+            if (rows > 1)
+                idCellValue = (int.Parse(idCellValue)).ToString();
+            else
+                idCellValue = "1";
+            return idCellValue;
         }
         private void DisplayBomb(double x, double y)
         {
@@ -335,7 +330,7 @@ namespace OOP_custom_project
             for (int i = 0; i< 5; i++)
             {
                 nextid += 1;
-                Mineral mineral = new Mineral([nextid.ToString()], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), new List<Point2D>());
+                Mineral mineral = new([nextid.ToString()], "", "", CollectMaterial(new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = x, Y = y, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100))), []);
                 obtainedmineral.Add(mineral);
                 _game.bag.MineralBag.Inventory.Put(mineral);
             }
@@ -349,7 +344,7 @@ namespace OOP_custom_project
                 SplashKit.ClearScreen();
 
 
-                Bitmap mapImage = new Bitmap("Background", @"D:\OOP-custom-project\Image\background.png");
+                Bitmap mapImage = new("Background", @"D:\OOP-custom-project\Image\background.png");
                 SplashKit.DrawBitmap(mapImage, _offsetX - 120, _offsetY - 120, SplashKit.OptionScaleBmp(2.2, 1.5));
                 SplashKit.DrawBitmapOnBitmap(_mapImage, new Bitmap("ToolboxMining", @"D:\OOP-custom-project\Mining_removedbg2\frame_00_delay-0.04s.png"), 2000, 800);
                 SplashKit.DrawBitmap(_mapImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
@@ -357,9 +352,9 @@ namespace OOP_custom_project
                 if (_game.window.CloseRequested)
                     break;
 
-                Bitmap bomb = new Bitmap("bomb", 500, 100);
+                Bitmap bomb = new("bomb", 500, 100);
                 bomb.Clear(Color.Black);
-                MapObject obj = new MapObject("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = 250, Y = 50, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100));
+                MapObject obj = new("D:\\OOP-custom-project\\Bomb_miner_removeBG\\", new Rectangle() { X = 250, Y = 50, Width = 200, Height = 200 }, 49, 0.04, definezone.AssignMineral(x - 100, y - 100));
 
                 // Calculate time elapsed and update the frame
                 DateTime now = DateTime.Now;
@@ -370,7 +365,7 @@ namespace OOP_custom_project
                     _currentFrame++;
                     _lastFrameTime = now;
                 }
-                ShowObjectGifFrames(_game.window, obj, _currentFrame, bomb);
+                ShowObjectGifFrames(obj, _currentFrame, bomb);
                 SplashKit.DrawBitmap(bomb, 250, 300, SplashKit.OptionScaleBmp(2, 2));
                 bomb.Free();
                 SplashKit.RefreshScreen(120);
@@ -378,19 +373,19 @@ namespace OOP_custom_project
         }
         private Bitmap Displayexamine(double x, double y)
         {
-            Bitmap obtained = new Bitmap("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
-            Bitmap baseimg = new Bitmap("examine", obtained.Width, obtained.Height + 20);
+            Bitmap obtained = new("obtained", @"D:\OOP-custom-project\Image\ObtainFrame.png");
+            Bitmap baseimg = new("examine", obtained.Width, obtained.Height + 20);
             baseimg.Clear(Color.RGBAColor(255, 165, 0, 64));
             SplashKit.DrawBitmapOnBitmap(baseimg, obtained, 0, 0);
             SplashKit.DrawTextOnBitmap(baseimg, "This place you can mine", Color.WhiteSmoke, "Arial", 0, 50, 30);
-            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x - 100, y - 100)._name, Color.WhiteSmoke, "Arial", 0, 30, 60);
-            string[] description = SplitParagraph(definezone.AssignMineral(x - 100, y - 100)._description, 22);
-            for (int i = 0; i < description.Count(); i++)
+            SplashKit.DrawTextOnBitmap(baseimg, definezone.AssignMineral(x - 100, y - 100).Name, Color.WhiteSmoke, "Arial", 0, 30, 60);
+            string[] description = SplitParagraph(definezone.AssignMineral(x - 100, y - 100).Description, 22);
+            for (int i = 0; i < description.Length; i++)
                 SplashKit.DrawTextOnBitmap(baseimg, description[i], Color.WhiteSmoke, "Arial", 0, 30, 80 + i * 10);
             SplashKit.DrawTextOnBitmap(baseimg, "Click anywhere to continue", Color.WhiteSmoke, "Arial", 40, 40, baseimg.Height - 20);
             return baseimg;
         }
-        public string[] SplitParagraph(string paragraph, int maxLength)
+        private static string[] SplitParagraph(string paragraph, int maxLength)
         {
             string[] words = paragraph.Split(' ');
             int maxLines = (int)Math.Ceiling((double)paragraph.Length / maxLength);

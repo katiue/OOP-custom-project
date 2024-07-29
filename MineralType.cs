@@ -4,18 +4,32 @@ namespace OOP_custom_project
 {
     public class MineralType
     {
-        public int _maxquantity;
-        public int _stiffness;
-        public Color _color;
-        public string _name;
-        public string _description;
+        private Color _color;
+        private readonly string _description;
         public MineralType(string name, string desc, int stiffness,int maxquantity, Color clr)
         {
-            _name = name;
+            Name = name;
             _description = desc;
-            _maxquantity = maxquantity;
-            _stiffness = stiffness;
+            MaxQuantity = maxquantity;
+            Stiffness = stiffness;
             _color = clr;
+        }
+        public int MaxQuantity { get; }
+        public int Stiffness { get; }
+        public Color Color
+        {
+            get
+            {
+                return _color;
+            }
+        }
+        public string Name { get; }
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
         }
     }
 }

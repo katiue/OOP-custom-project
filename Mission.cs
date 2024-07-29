@@ -8,33 +8,15 @@ namespace OOP_custom_project
 {
     public class Mission : GameObject
     {
-        private string _status;
-        private List<GameObject> _reward;
-        private Func<Game, bool> _condition;
+        private readonly Func<Game, bool> _condition;
         public Mission(string[] ids, string name, string desc, string status, List<GameObject> reward, Func<Game, bool> condition) : base(ids, name, desc)
         {
-            _status = status;
-            _reward = reward;
+            Status = status;
+            Reward = reward;
             _condition = condition;
         }
-        public string Status
-        {
-            get
-            {
-                return _status;
-            }
-            set
-            {
-                _status = value;
-            }
-        }
-        public List<GameObject> Reward
-        {
-            get
-            {
-                return _reward;
-            }
-        }
+        public string Status { get; set; }
+        public List<GameObject> Reward { get; }
         public Func<Game, bool> Condition
         {
             get
@@ -42,7 +24,7 @@ namespace OOP_custom_project
                 return _condition;
             }
         }
-        public bool CheckCondition(Game game, Func<Game, bool> condition)
+        public static bool CheckCondition(Game game, Func<Game, bool> condition)
         {
             return condition(game);
         }

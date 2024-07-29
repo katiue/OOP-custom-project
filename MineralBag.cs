@@ -2,15 +2,14 @@
 
 namespace OOP_custom_project
 {
-    public class MineralBag : Item, IHaveInventory, IAmAScreen
+    public class MineralBag : GameObject, IHaveInventory, IAmAScreen
     {
-        private MineralInventory _inventory;
         private double _offsetY;
         private DisplayMined? _display;
         public Mineral? showing;
         public MineralBag(string[] ids, string name, string desc) : base(ids, name, desc)
         {
-            _inventory = new MineralInventory();
+            Inventory = new MineralInventory();
         }
         public GameObject Locate(string id)
         {
@@ -20,26 +19,19 @@ namespace OOP_custom_project
             }
             else
             {
-                return _inventory.Fetch(id);
+                return Inventory.Fetch(id);
             }
         }
         public override string FullDescription
         {
             get
             {
-                return "In the " + Name + " you can see:\n " + _inventory.Mineral;
+                return "In the " + Name + " you can see:\n " + Inventory.Mineral;
             }
         }
-        public MineralInventory Inventory
-        {
-            get
-            {
-                return _inventory;
-            }
-        }
+        public MineralInventory Inventory { get; }
         public override void Draw()
         {
-            Window window = SplashKit.CurrentWindow();
             if (SplashKit.KeyTyped(KeyCode.EscapeKey))
             {
                 showing = null;
@@ -53,18 +45,18 @@ namespace OOP_custom_project
 
             if(showing == null)
             {
-                for (int i = 0; i < _inventory.Mineral.Count; i++)
+                for (int i = 0; i < Inventory.Mineral.Count; i++)
                 {
                     if (SplashKit.MouseClicked(MouseButton.LeftButton)&& SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 100 * (i % 8) + 164, 100 * (i / 8) + 64 + _offsetY, 70, 70) && pos.X == 0 && pos.Y == 0)
                     {
-                        showing = _inventory.Mineral[i];
+                        showing = Inventory.Mineral[i];
                     }
                     _display = null;
-                    if (_inventory.Mineral[i] != null && (i / 8) * 100 - 200 + _offsetY > -500 && (i / 8) * 100 - 300 + _offsetY < 300)
+                    if (Inventory.Mineral[i] != null && (i / 8) * 100 - 200 + _offsetY > -500 && (i / 8) * 100 - 300 + _offsetY < 300)
                     {
 
-                        _inventory.Mineral[i].Draw((i % 8) * 100 - 200, (i / 8) * 100 - 300 + _offsetY, 0.1);
-                        SplashKit.DrawText(_inventory.Mineral[i].Type._name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140 + _offsetY);
+                        Inventory.Mineral[i].Draw((i % 8) * 100 - 200, (i / 8) * 100 - 300 + _offsetY, 0.1);
+                        SplashKit.DrawText(Inventory.Mineral[i].Type.Name, Color.Black, "Arial", 12, (i % 8) * 100 + 165, (i / 8) * 100 + 140 + _offsetY);
                     }
                 }
             }
@@ -75,11 +67,8 @@ namespace OOP_custom_project
         }
         private void DisplayMineral(Mineral mineral)
         {
-            if (_display == null)
-            {
-                _display = new DisplayMined(SplashKit.CurrentWindow(), mineral);
-            }
-            _display.Drawing(_inventory);
+            _display ??= new DisplayMined(SplashKit.CurrentWindow(), mineral);
+            _display.Drawing(Inventory);
         }
     }
 }

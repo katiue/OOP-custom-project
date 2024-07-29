@@ -4,24 +4,24 @@ namespace OOP_custom_project
 {
     public class Game
     {
-
         private string current_screen_type = "starting";
-        public Window window = new Window("Game screen", 1000, 700);
+        private readonly WeaponForging forging;
+        private readonly MainScreen mainScreen;
+        private readonly Quest quest;
+        private readonly InteractiveMap map;
+        public Window window = new("Game screen", 1000, 700);
         public Bag bag;
-        private WeaponForging forging;
-        private MainScreen mainScreen;
-        private Quest quest;
-        
+
         public Game() 
         {
             mainScreen = new MainScreen(this);
             bag = new Bag(this);
             forging = new WeaponForging(this);
             quest = new Quest(this);
+            map = new InteractiveMap(this);
         }
         public void Run()
         {
-            InteractiveMap map = new InteractiveMap(window, this);
             do
             {
                 SplashKit.ProcessEvents();

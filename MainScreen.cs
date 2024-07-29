@@ -5,11 +5,11 @@ namespace OOP_custom_project
 {
     public class MainScreen : IAmAScreen
     {
-        private Game _game;
+        private readonly Game _game;
         private bool tutorial = true;
         private int scriptcount = 0;
-        private string[] script = new string[]
-        {
+        private readonly string[] script =
+        [
             "Hephaestus: Welcome to the world of forging, young adventurer!",
             "Hephaestus: I am Hephaestus, the god of forging. It's an honor to guide you on this journey.",
             "Hephaestus: In this world, we transform raw materials into magnificent weapons and tools.",
@@ -22,7 +22,7 @@ namespace OOP_custom_project
             "Hephaestus: Don't be afraid to make mistakes. Each failure is a step towards mastery.",
             "Hephaestus: Now, go forth and unleash your inner blacksmith! The world awaits your creations.",
             "Hephaestus: Good luck on your journey."
-        };
+        ];
         public MainScreen(Game game) 
         {
             _game = game;
@@ -39,7 +39,7 @@ namespace OOP_custom_project
             //draw Hephaestus and dialog
             if (tutorial)
             {
-                Bitmap Hephaestus = new Bitmap("Hepatheus", @"D:\OOP-custom-project\Image\Hephaestus.png");
+                Bitmap Hephaestus = new("Hepatheus", @"D:\OOP-custom-project\Image\Hephaestus.png");
                 SplashKit.DrawBitmap(Hephaestus, -250, -250, SplashKit.OptionScaleBmp(0.4, 0.4));
                 if (SplashKit.MouseClicked(MouseButton.LeftButton))
                 {
@@ -51,7 +51,7 @@ namespace OOP_custom_project
                 }
                 if (scriptcount != script.Length)
                     DrawDialog(scriptcount);
-                Bitmap focus = new Bitmap("focus", @"D:\OOP-custom-project\Image\focus.png");
+                Bitmap focus = new("focus", @"D:\OOP-custom-project\Image\focus.png");
                 switch (scriptcount)
                 {
                     case 3:
@@ -93,7 +93,7 @@ namespace OOP_custom_project
         }
         private void DrawDialog(int count)
         {
-            Bitmap bitmap = new Bitmap("dialog", 700, 150);
+            Bitmap bitmap = new("dialog", 700, 150);
             bitmap.Clear(Color.RGBAColor(128, 128, 128, 100));
 
             string[] eachtext = script[count].Split('.', '!');

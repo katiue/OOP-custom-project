@@ -4,43 +4,22 @@ namespace OOP_custom_project
 {
     public class Mineral : GameObject
     {
-        private MineralType _type;
-        private GachaMineral gacha = new();
-        private List<Point2D> Points;
+        private readonly GachaMineral gacha = new();
+
         public Mineral(string []id, string name, string desc,MineralType type, List<Point2D> points) : base(id, name, desc)
         {
-            _type = type;
+            Type = type;
             if(points.Count == 0)
             {
-                Points = gacha.points();
+                this.Points = gacha.Points();
             }
             else
             {
-                Points = points;
+                this.Points = points;
             }
         }
-        public List<Point2D> points
-        {
-            get
-            {
-                return Points;
-            }
-            set
-            {
-                Points = value;
-            }
-        }
-        public MineralType Type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-            }
-        }
+        public List<Point2D> Points { get; set; }
+        public MineralType Type { get; set; }
         public double Area
         {
             get
@@ -65,9 +44,9 @@ namespace OOP_custom_project
             List<Point2D> pts = Points;
             for (int i = 0; i < pts.Count - 1; i++)
             {
-                SplashKit.FillTriangleOnBitmap(baseImage, _type._color, 800 / 2, 800 / 2, pts[i].X, pts[i].Y, pts[i + 1].X, pts[i + 1].Y);
+                SplashKit.FillTriangleOnBitmap(baseImage, Type.Color, 800 / 2, 800 / 2, pts[i].X, pts[i].Y, pts[i + 1].X, pts[i + 1].Y);
             }
-            SplashKit.FillTriangleOnBitmap(baseImage, _type._color, 800 / 2, 800 / 2, pts[pts.Count - 1].X, pts[pts.Count - 1].Y, pts[0].X, pts[0].Y);
+            SplashKit.FillTriangleOnBitmap(baseImage, Type.Color, 800 / 2, 800 / 2, pts[^1].X, pts[^1].Y, pts[0].X, pts[0].Y);
             SplashKit.DrawBitmap(baseImage, x, y, SplashKit.OptionScaleBmp(scale, scale));
             baseImage.Dispose();
         }

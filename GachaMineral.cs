@@ -4,15 +4,15 @@ namespace OOP_custom_project
 {
     public class GachaMineral
     {
-        private Random random;
+        private readonly Random random;
         public GachaMineral() 
         {
             random = new Random();
         }
-        public List<Point2D> points()
+        public List<Point2D> Points()
         {
-            List<Point2D> point2Ds = new List<Point2D>();
-            Point2D pt = new Point2D();
+            List<Point2D> point2Ds = [];
+            Point2D pt = new();
             int numPoints = random.Next(2, 3);
             for (int i = 0;i < numPoints; i++)
             {

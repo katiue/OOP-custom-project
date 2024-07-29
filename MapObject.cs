@@ -14,7 +14,7 @@ namespace OOP_custom_project
             Area = area;
             _frames = LoadGifFrames(name, frameCount, frameDuration);
         }
-        private Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
+        private static Bitmap[] LoadGifFrames(string baseName, int frameCount, double frameDuration)
         {
             Bitmap[] frames = new Bitmap[frameCount];
             if(frameCount < 10 )

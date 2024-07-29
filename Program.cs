@@ -6,7 +6,7 @@ namespace OOP_custom_project
         {
             //Testing test = new();
             //test.MakeMapObjectLayer();
-            Game game = new Game();
+            Game game = new();
             game.Run();
         }
     }

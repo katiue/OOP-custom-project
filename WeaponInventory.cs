@@ -2,42 +2,30 @@
 {
     public class WeaponInventory
     {
-        private List<Weapon> component;
         public WeaponInventory()
         {
-            component = new List<Weapon>();
-        }
-        public bool HasItem(string id)
-        {
-            foreach (Weapon i in component)
-            {
-                if (i.AreYou(id))
-                {
-                    return true;
-                }
-            }
-            return false;
+            WeaponList = [];
         }
         public void Put(Weapon itm)
         {
-            component.Add(itm);
+            WeaponList.Add(itm);
         }
         public void Put(List<Weapon> itm)
         {
             foreach (var i in itm)
             {
-                component.Add(i);
+                WeaponList.Add(i);
             }
         }
         public Weapon Take(string id)
         {
             Weapon takenItem = Fetch(id);
-            component.Remove(takenItem);
+            WeaponList.Remove(takenItem);
             return takenItem;
         }
         public Weapon Fetch(string id)
         {
-            foreach (Weapon i in component)
+            foreach (Weapon i in WeaponList)
             {
                 if (i.AreYou(id))
                 {
@@ -46,12 +34,6 @@
             }
             return null;
         }
-        public List<Weapon> WeaponList
-        {
-            get
-            {
-                return component;
-            }
-        }
+        public List<Weapon> WeaponList { get; }
     }
 }

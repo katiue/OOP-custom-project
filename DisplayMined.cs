@@ -4,18 +4,18 @@ namespace OOP_custom_project
 {
     public class DisplayMined
     {
-        private Window window;
-        private Bitmap background = new Bitmap("upgarding background", @"D:\OOP-custom-project\Image\forging_background.jpg");
-        private Mineral mineral { get; set; }
-        private GachaMineral gacha = new GachaMineral();
-        private List<Mineral> minerals = new List<Mineral>();
+        private readonly Window window;
+        private readonly Bitmap background = new("upgarding background", @"D:\OOP-custom-project\Image\forging_background.jpg");
+        private Mineral Mineral { get; set; }
+        private readonly GachaMineral gacha = new();
+        private readonly List<Mineral> minerals = [];
         private bool showbag = false;
         private double total = 0;
         private float _offsetY;
         public DisplayMined(Window window, Mineral mineral)
         {
             this.window = window;
-            this.mineral = mineral;
+            Mineral = mineral;
         }
         public void Drawing(MineralInventory _inventory)
         {
@@ -30,15 +30,15 @@ namespace OOP_custom_project
             double scaleY = (double)window.Height / (double)background.Height;
             SplashKit.DrawBitmap(background, -652, -545, SplashKit.OptionScaleBmp(scaleX, scaleY));
 
-            mineral.Draw(400, -200, 0.3);
+            Mineral.Draw(400, -200, 0.3);
 
-            Bitmap bitmap = new Bitmap("Detail", 300, 200);
+            Bitmap bitmap = new("Detail", 300, 200);
             bitmap.Clear(Color.Wheat);
 
             SplashKit.DrawTextOnBitmap(bitmap, "Detail", Color.DarkRed, "Arial", 12, 30, 10);
-            SplashKit.DrawTextOnBitmap(bitmap, "Type: " + mineral.Type._name, Color.Black, "Arial", 12, 10, 30);
-            SplashKit.DrawTextOnBitmap(bitmap, "Area: " + mineral.Area, Color.Black, "Arial", 12, 10, 40);
-            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + mineral.Type._stiffness, Color.Black, "Arial", 12, 10, 50);
+            SplashKit.DrawTextOnBitmap(bitmap, "Type: " + Mineral.Type.Name, Color.Black, "Arial", 12, 10, 30);
+            SplashKit.DrawTextOnBitmap(bitmap, "Area: " + Mineral.Area, Color.Black, "Arial", 12, 10, 40);
+            SplashKit.DrawTextOnBitmap(bitmap, "Stiffness: " + Mineral.Type.Stiffness, Color.Black, "Arial", 12, 10, 50);
 
             total = 0;
             foreach(var m in minerals)
@@ -50,7 +50,7 @@ namespace OOP_custom_project
             SplashKit.DrawBitmap(bitmap, 100, 150,SplashKit.OptionScaleBmp(1.5,2));
 
             //draw upgrade button
-            Bitmap button = new Bitmap("Upgrade", @"D:\OOP-custom-project\Image\Upgrade_button.png");
+            Bitmap button = new("Upgrade", @"D:\OOP-custom-project\Image\Upgrade_button.png");
             SplashKit.DrawBitmap(button, 500,400, SplashKit.OptionScaleBmp(0.6,0.5));
 
             if(SplashKit.MouseClicked(MouseButton.LeftButton))
@@ -60,17 +60,19 @@ namespace OOP_custom_project
                 {
                     for(int i = 0; i < total /10000; i++)
                     {
-                        Point2D pt = new Point2D();
-                        pt.X = gacha.Pull();
-                        pt.Y = gacha.Pull();
-                        mineral.points.Add(pt);
+                        Point2D pt = new()
+                        {
+                            X = gacha.Pull(),
+                            Y = gacha.Pull()
+                        };
+                        Mineral.Points.Add(pt);
                     }
                     foreach (var m in minerals)
                     {
                         _inventory.Take(m.ID[0]);
                     }
                     minerals.Clear();
-                    GIFprocessor gif = new GIFprocessor(@"D:\OOP-custom-project\Smashing_hammer\", 19, 0.03);
+                    GIFprocessor gif = new(@"D:\OOP-custom-project\Smashing_hammer\", 19, 0.03);
                     gif.ShowGifFrames(window);
                 }
                 //click to add the into mineral bar
@@ -131,7 +133,7 @@ namespace OOP_custom_project
             }
             for(int i = minerals.Count; i < 8; i++)
             {
-                Bitmap bmp= new Bitmap("Empty", @"D:\OOP-custom-project\Image\empty_box.png");
+                Bitmap bmp= new("Empty", @"D:\OOP-custom-project\Image\empty_box.png");
                 SplashKit.DrawBitmap(bmp, i * 50 - 50, 300, SplashKit.OptionScaleBmp(0.2,0.2));
             }
         }

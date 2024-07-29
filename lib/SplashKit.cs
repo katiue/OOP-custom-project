@@ -462,7 +462,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public __sklib_line[] data_from_lib
       {
         get
@@ -484,7 +484,7 @@ namespace SplashKitSDK
     private static __sklib_vector_line __skadapter__to_sklib_vector_line(List<Line> v)
     {
       int i = 0;
-      __sklib_vector_line result = new __sklib_vector_line();
+      __sklib_vector_line result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -501,7 +501,7 @@ namespace SplashKitSDK
     }
     private static List<Line> __skadapter__to_vector_line(__sklib_vector_line v)
     {
-      List<Line> result = new List<Line>();
+      List<Line> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_line(v.data_from_lib[i]));
@@ -530,7 +530,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public byte[] data_from_lib
       {
         get
@@ -552,7 +552,7 @@ namespace SplashKitSDK
     private static __sklib_vector_int8_t __skadapter__to_sklib_vector_int8_t(List<byte> v)
     {
       int i = 0;
-      __sklib_vector_int8_t result = new __sklib_vector_int8_t();
+      __sklib_vector_int8_t result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -569,7 +569,7 @@ namespace SplashKitSDK
     }
     private static List<byte> __skadapter__to_vector_int8_t(__sklib_vector_int8_t v)
     {
-      List<byte> result = new List<byte>();
+      List<byte> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_int8_t(v.data_from_lib[i]));
@@ -598,7 +598,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public __sklib_triangle[] data_from_lib
       {
         get
@@ -620,7 +620,7 @@ namespace SplashKitSDK
     private static __sklib_vector_triangle __skadapter__to_sklib_vector_triangle(List<Triangle> v)
     {
       int i = 0;
-      __sklib_vector_triangle result = new __sklib_vector_triangle();
+      __sklib_vector_triangle result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -637,7 +637,7 @@ namespace SplashKitSDK
     }
     private static List<Triangle> __skadapter__to_vector_triangle(__sklib_vector_triangle v)
     {
-      List<Triangle> result = new List<Triangle>();
+      List<Triangle> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_triangle(v.data_from_lib[i]));
@@ -666,7 +666,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public __sklib_string[] data_from_lib
       {
         get
@@ -688,7 +688,7 @@ namespace SplashKitSDK
     private static __sklib_vector_string __skadapter__to_sklib_vector_string(List<string> v)
     {
       int i = 0;
-      __sklib_vector_string result = new __sklib_vector_string();
+      __sklib_vector_string result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -705,7 +705,7 @@ namespace SplashKitSDK
     }
     private static List<string> __skadapter__to_vector_string(__sklib_vector_string v)
     {
-      List<string> result = new List<string>();
+      List<string> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_string(v.data_from_lib[i]));
@@ -734,7 +734,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public double[] data_from_lib
       {
         get
@@ -756,7 +756,7 @@ namespace SplashKitSDK
     private static __sklib_vector_double __skadapter__to_sklib_vector_double(List<double> v)
     {
       int i = 0;
-      __sklib_vector_double result = new __sklib_vector_double();
+      __sklib_vector_double result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -773,7 +773,7 @@ namespace SplashKitSDK
     }
     private static List<double> __skadapter__to_vector_double(__sklib_vector_double v)
     {
-      List<double> result = new List<double>();
+      List<double> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_double(v.data_from_lib[i]));
@@ -802,7 +802,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public __sklib_ptr[] data_from_lib
       {
         get
@@ -824,7 +824,7 @@ namespace SplashKitSDK
     private static __sklib_vector_json __skadapter__to_sklib_vector_json(List<Json> v)
     {
       int i = 0;
-      __sklib_vector_json result = new __sklib_vector_json();
+      __sklib_vector_json result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -841,7 +841,7 @@ namespace SplashKitSDK
     }
     private static List<Json> __skadapter__to_vector_json(__sklib_vector_json v)
     {
-      List<Json> result = new List<Json>();
+      List<Json> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_json(v.data_from_lib[i]));
@@ -870,7 +870,7 @@ namespace SplashKitSDK
         }
       }
       public uint size_from_app;
-      private IntPtr _data_from_lib;
+      private readonly IntPtr _data_from_lib;
       public int[] data_from_lib
       {
         get
@@ -892,7 +892,7 @@ namespace SplashKitSDK
     private static __sklib_vector_bool __skadapter__to_sklib_vector_bool(List<bool> v)
     {
       int i = 0;
-      __sklib_vector_bool result = new __sklib_vector_bool();
+      __sklib_vector_bool result = new();
 
       result.size_from_lib = 0;
       result.size_from_app = (uint)v.Count;
@@ -909,7 +909,7 @@ namespace SplashKitSDK
     }
     private static List<bool> __skadapter__to_vector_bool(__sklib_vector_bool v)
     {
-      List<bool> result = new List<bool>();
+      List<bool> result = [];
       for (int i = 0; i < v.size_from_lib; i++)
       {
         result.Add(__skadapter__to_bool(v.data_from_lib[i]));
@@ -16346,13 +16346,13 @@ namespace SplashKitSDK
             }
         }
 
-        private static FreeNotifier _RemoveMethod = PointerWrapper.Remove;
+        private static readonly FreeNotifier _RemoveMethod = PointerWrapper.Remove;
 
         static PointerWrapper()
         {
             //Register Remove with SplashKit
             //Console.WriteLine("Registering");
-            _ptrRegister = new Dictionary<IntPtr, PointerWrapper>();
+            _ptrRegister = [];
             SplashKit.RegisterFreeNotifier(_RemoveMethod);
         }
 
@@ -16370,7 +16370,7 @@ namespace SplashKitSDK
         }
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        internal static ReleaserClass releaser = new ReleaserClass();
+        internal static ReleaserClass releaser = new();
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         protected internal IntPtr Pointer;
