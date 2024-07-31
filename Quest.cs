@@ -6,6 +6,8 @@ namespace OOP_custom_project
 {
     public class Quest : IAmAScreen
     {
+        private const string MineralFilePath = "D:\\OOP-custom-project\\Mineral.xlsx";
+        private const string WeaponFilePath = "D:\\OOP-custom-project\\Weapon.xlsx";
         private readonly Define define = new();
         private readonly List<Mission> _missions;
         private readonly Game _game;
@@ -16,17 +18,17 @@ namespace OOP_custom_project
             [
                 new(["mission1"], "Collect mineral from map", "Open map to collect 3 types of \nmineral", "In Progress", 
                 [ 
-                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[7], []),
-                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], [])
+                    new Mineral([IDgenerator("mineral")], "", "", define.minerals[7], []),
+                    new Mineral([IDgenerator("mineral")], "", "", define.minerals[8], [])
                 ], game => game.bag.MineralBag.Inventory.Mineral.Count >= 2),
                 new(["mission2"], "Upgrade minerals", "Upgrade two minerals so they have \nthe area of 15000 each", "In Progress", 
                 [ 
-                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], []) 
+                    new Mineral([IDgenerator("mineral")], "", "", define.minerals[8], []) 
                 ], game => game.bag.MineralBag.Inventory.Mineral.Count(mineral => mineral.Area > 15000) >= 2),
                 new(["mission3"], "Forge Weapon", "Forge two minerals into a sword", "In Progress", [ 
                     ForgeWeapon(
-                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[7], []),
-                    new Mineral([IDgeneratorMineral()], "", "", define.minerals[8], [])) 
+                    new Mineral([IDgenerator("mineral")], "", "", define.minerals[7], []),
+                    new Mineral([IDgenerator("mineral")], "", "", define.minerals[8], [])) 
                 ], game => game.bag.WeaponBag.Inventory.WeaponList.Count >= 1)
             ];
             _game = game;
@@ -133,28 +135,27 @@ namespace OOP_custom_project
                 }
             }
         }
-        private static string IDgeneratorMineral()
+        private static string IDgenerator(string type)
         {
-            FileInfo fileInfo = new("D:\\OOP-custom-project\\Mineral.xlsx");
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage package = new(fileInfo);
-            ExcelWorksheet worksheet = package.Workbook.Worksheets["Minerals"] ?? throw new Exception("Worksheet 'Minerals' not found in the Excel file.");
+            string FilePath = "";
+            string WorkSheet = "";
 
-            //use the newest id to add new mineral
-            int rows = worksheet.Dimension.Rows;
-            string? idCellValue = worksheet.Cells[rows, 1].Value?.ToString();
-            if (rows > 1)
-                idCellValue = (int.Parse(idCellValue)).ToString();
-            else
-                idCellValue = "1";
-            return idCellValue;
-        }
-        private static string IDgeneratorWeapon()
-        {
-            FileInfo fileInfo = new("D:\\OOP-custom-project\\Weapon.xlsx");
+            switch(type)
+            {
+                case "mineral":
+                    FilePath = MineralFilePath;
+                    WorkSheet = "Minerals";
+                    break;
+                case "weapon":
+                    FilePath = WeaponFilePath;
+                    WorkSheet = "Weapon";
+                    break;
+            }
+
+            FileInfo fileInfo = new(FilePath);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new(fileInfo);
-            ExcelWorksheet worksheet = package.Workbook.Worksheets["Weapon"] ?? throw new Exception("Worksheet 'Weapon' not found in the Excel file.");
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[WorkSheet] ?? throw new Exception($"Worksheet {WorkSheet} not found in the Excel file.");
 
             //use the newest id to add new mineral
             int rows = worksheet.Dimension.Rows;
@@ -169,7 +170,7 @@ namespace OOP_custom_project
         {
             if (define.weaponMappings.TryGetValue((mineral1.Type.Name, mineral2.Type.Name), out var weaponMapping))
             {
-                return new Weapon([IDgeneratorWeapon()], weaponMapping.WeaponName, "", mineral1.Type.Stiffness + mineral2.Type.Stiffness, 1, mineral1.Type.Name, mineral2.Type.Name);
+                return new Weapon([IDgenerator("weapon")], weaponMapping.WeaponName, "", mineral1.Type.Stiffness + mineral2.Type.Stiffness, 1, mineral1.Type.Name, mineral2.Type.Name);
             }
             return null;
         }

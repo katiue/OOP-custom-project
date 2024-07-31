@@ -22,23 +22,46 @@ namespace OOP_custom_project
         public WeaponBag WeaponBag { get; }
         public void Draw()
         {
+            DrawBackground();
+            DrawIcons();
+            HandleInput();
+            DrawCurrentBag();
+        }
+        private void DrawBackground()
+        {
             SplashKit.FillRectangle(Color.RGBAColor(128, 128, 128, 64), 0, 0, 1000, 700);
-
-            //draw selection bar
-            Bitmap mineral_icon = new("mineral", @"D:\OOP-custom-project\Image\mineral_icon.png");
-            SplashKit.DrawBitmap(mineral_icon, -57, -36, SplashKit.OptionScaleBmp(0.22, 0.22));
-            Bitmap weapon_icon = new("weapon", @"D:\OOP-custom-project\Image\sword_icon.png");
-            SplashKit.DrawBitmap(weapon_icon, -57, 33, SplashKit.OptionScaleBmp(0.22, 0.22));
-
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 50, 50, 50))
+        }
+        private void DrawIcons()
+        {
+            DrawIcon("mineral", @"D:\OOP-custom-project\Image\mineral_icon.png", -57, -36);
+            DrawIcon("weapon", @"D:\OOP-custom-project\Image\sword_icon.png", -57, 33);
+        }
+        private void DrawIcon(string name, string filePath, int x, int y)
+        {
+            Bitmap icon = new(name, filePath);
+            SplashKit.DrawBitmap(icon, x, y, SplashKit.OptionScaleBmp(0.22, 0.22));
+        }
+        private void HandleInput()
+        {
+            if (SplashKit.MouseClicked(MouseButton.LeftButton))
             {
-                _displaying = "mineral";
+                if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 50, 50, 50))
+                {
+                    _displaying = "mineral";
+                }
+                else if (SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 120, 50, 50))
+                {
+                    _displaying = "weapon";
+                }
             }
-            if (SplashKit.MouseClicked(MouseButton.LeftButton) && SplashKit.PointInRectangle(SplashKit.MouseX(), SplashKit.MouseY(), 30, 120, 50, 50))
+            if (SplashKit.KeyDown(KeyCode.EscapeKey))
             {
-                _displaying = "weapon";
+                _game.ChangeScreen("starting");
             }
-            switch(_displaying)
+        }
+        private void DrawCurrentBag()
+        {
+            switch (_displaying)
             {
                 case "mineral":
                     MineralBag.Draw();
@@ -47,11 +70,8 @@ namespace OOP_custom_project
                     WeaponBag.Draw();
                     break;
             }
-            if(SplashKit.KeyDown(KeyCode.EscapeKey))
-            {
-                _game.ChangeScreen("starting");
-            }
         }
+
         public void SaveFile()
         {
             Database.ExportMineralsToExcel(MineralBag.Inventory.Mineral, @"D:\OOP-custom-project\Mineral.xlsx");

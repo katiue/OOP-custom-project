@@ -117,6 +117,7 @@ namespace OOP_custom_project
                 }
                 //Draw animation layer
                 SplashKit.DrawBitmap(baseImage, _offsetX, _offsetY, SplashKit.OptionScaleBmp(_zoom, _zoom));
+                baseImage.Free();
 
                 if (SplashKit.KeyDown(KeyCode.EscapeKey))
                 {
@@ -134,7 +135,6 @@ namespace OOP_custom_project
                 {
                     SplashKit.DrawBitmap(DrawObtained(), 400, 200, SplashKit.OptionScaleBmp(2,2));
                 }
-                baseImage.Free();
 
                 if(examine !=null)
                 {
